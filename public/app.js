@@ -5,6 +5,7 @@ const $ = id => document.getElementById(id);
 const number = new Intl.NumberFormat('sv-SE');
 const decimal = new Intl.NumberFormat('sv-SE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const changeDecimal = new Intl.NumberFormat('sv-SE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const exactPartyDecimal = new Intl.NumberFormat('sv-SE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const clock = new Intl.DateTimeFormat('sv-SE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Stockholm' });
 const fmt = value => value == null || (typeof value === 'number' && !Number.isFinite(value)) ? '—' : typeof value === 'number' ? number.format(value) : value;
 const pct = value => value == null ? '—' : `${decimal.format(value)} %`;
@@ -22,6 +23,7 @@ let area = initial.get('area') || '', selected = (initial.get('parties') || '').
 let data, liveData, busy = false, nextRefresh = Date.now() + 30000, liveOK = false;
 let history = [], replayIndex = -1, replayMode = false, playbackTimer, snapshotRequest = 0, playing = false;
 let geography = [], regionsLive = [], trends = [], trendsArea = null, trendRequest = 0;
+let trendWindowDistricts = 500;
 let initialSnapshot = initial.get('snapshot'), restoringSnapshot = false;
 const snapshotCache = new Map();
 const expandedParties = new Set();
@@ -90,6 +92,7 @@ function renderParties() {
   }
   const currentId = history[replayMode ? replayIndex : history.length - 1]?.id, currentTrendIndex = trends.findIndex(point => point.id === currentId), previousTrend = currentTrendIndex > 0 ? trends[currentTrendIndex - 1] : null, currentTrend = currentTrendIndex >= 0 ? trends[currentTrendIndex] : null;
   parties.sort((a, b) => $('sort').value === 'name' ? partyName(a).localeCompare(partyName(b), 'sv') : $('sort').value === 'change' ? (compare(b).delta ?? -Infinity) - (compare(a).delta ?? -Infinity) : b.antalRoster - a.antalRoster);
+  const validVotes = numeric(current?.rosterPaverkaMandat?.antalRoster);
   const max = Math.max(35, ...partiesFor(current).flatMap(p => [p.andelRoster || 0, compare(p).share || 0]));
   const mode = $('comparison').value;
   $('baseline-legend').hidden = mode === 'none'; set('baseline-label', mode === 'national' ? 'Hela riket 2026' : 'Valet 2022');
@@ -127,7 +130,9 @@ function renderParties() {
     const updateDelta = currentTrend && previousTrend && currentTrend.shares?.[key] != null && previousTrend.shares?.[key] != null ? currentTrend.shares[key] - previousTrend.shares[key] : null;
     const voteDelta = currentTrend && previousTrend && currentTrend.votes?.[key] != null && previousTrend.votes?.[key] != null ? currentTrend.votes[key] - previousTrend.votes[key] : null;
     const updateCell = element('td', 'numeric update-column'); updateCell.append(element('span', `change ${voteDelta > 0 ? 'positive' : voteDelta < 0 ? 'negative' : 'neutral'}`, voteDelta == null ? '—' : `${voteDelta > 0 ? '↗ +' : voteDelta < 0 ? '↘ −' : '→ '}${fmt(Math.abs(voteDelta))}`));
-    const voteCell = element('td', 'numeric vote-column', fmt(p.antalRoster));
+    const partyVotes = numeric(p.antalRoster);
+    const exactShare = validVotes > 0 && Number.isFinite(partyVotes) ? partyVotes / validVotes * 100 : null;
+    const voteCell = element('td', 'numeric vote-column'); voteCell.append(element('span', '', fmt(p.antalRoster)), element('small', 'exact-party-share', exactShare == null ? '—' : `${exactPartyDecimal.format(exactShare)} %`));
     row.append(nameCell, chart, share, change, updateCell, voteCell, element('td', 'numeric extra-column', pct(p.andelRosterForegaendeVal)), element('td', 'numeric extra-column', fmt(p.antalRosterForegaendeVal)));
     if (!expanded) return [row];
     const detailRow = element('tr', 'party-history-row'), cell = element('td'); cell.colSpan = 8;
@@ -291,10 +296,22 @@ function renderCompletion() {
 function svgNode(tag, attributes = {}) { const node = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value); return node; }
 function renderTrend() {
   $('trend-chart').replaceChildren(); $('trend-legend').replaceChildren();
+  $('trend-window-list').replaceChildren(); set('trend-window-note', '');
   if (trendsArea !== area) { $('trend-chart').append(element('p', 'empty-state', 'Hämtar områdets historik…')); return; }
   const points = trends.filter(point => point.shares != null);
   if (!points.length) { $('trend-chart').append(element('p', 'empty-state', 'Det finns ännu ingen sparad kurva för detta område.')); return; }
   const keys = selected.length ? selected : [...new Set(points.flatMap(point => Object.keys(point.shares)))];
+  const latest = points.at(-1), targetDistricts = latest.districts - trendWindowDistricts;
+  const earlier = points.filter(point => point.districts <= targetDistricts).at(-1) || points[0];
+  const districtSpan = latest.districts - earlier.districts;
+  set('trend-window-title', `Trend senaste ${number.format(trendWindowDistricts)} distrikt`);
+  set('trend-window-note', `${fmt(districtSpan)} distrikt · ${clock.format(earlier.capturedAt)}–${clock.format(latest.capturedAt)}`);
+  $('trend-window-list').replaceChildren(...keys.map(key => {
+    const delta = latest.shares?.[key] != null && earlier.shares?.[key] != null ? latest.shares[key] - earlier.shares[key] : null;
+    const item = element('span', `trend-window-item ${delta > 0 ? 'positive' : delta < 0 ? 'negative' : ''}`);
+    item.append(element('strong', '', key), element('span', '', delta == null ? '—' : `${delta > 0 ? '+' : delta < 0 ? '−' : ''}${changeDecimal.format(Math.abs(delta))} pp`));
+    return item;
+  }));
   const W = 1000, H = 290, left = 45, right = 30, top = 22, bottom = 34;
   const minTime = points[0].capturedAt, maxTime = points.at(-1).capturedAt;
   const maxShare = Math.max(10, Math.ceil(Math.max(...points.flatMap(point => keys.map(key => point.shares[key] || 0))) / 5) * 5);
@@ -513,6 +530,7 @@ $('export-csv').addEventListener('click', () => {
 });
 $('export-json').addEventListener('click', () => download(JSON.stringify({ source: 'https://resultat.val.se/data/resultat/val2026/RD_P.json', mode: replayMode ? 'replay' : 'live', snapshotId: replayMode ? history[replayIndex]?.id : null, area: scopeName(), data }, null, 2), 'application/json', 'val2026-ogonblicksbild.json'));
 $('refresh').addEventListener('click', refresh);
+$('trend-window-size').addEventListener('change', () => { trendWindowDistricts = Number($('trend-window-size').value); renderTrend(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); }); window.addEventListener('online', refresh);
 for (const [id, param] of [['comparison', 'compare'], ['sort', 'sort'], ['threshold-filter', 'threshold']]) { const value = initial.get(param); if (value && [...$(id).options].some(option => option.value === value)) $(id).value = value; }
 $('party-search').value = initial.get('q') || ''; $('details-toggle').checked = initial.get('details') === '1';
