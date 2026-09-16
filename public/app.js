@@ -5,22 +5,35 @@ const $ = id => document.getElementById(id);
 const number = new Intl.NumberFormat('sv-SE');
 const decimal = new Intl.NumberFormat('sv-SE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const changeDecimal = new Intl.NumberFormat('sv-SE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const exactPartyDecimal = new Intl.NumberFormat('sv-SE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const exactPartyDecimal = new Intl.NumberFormat('sv-SE', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
 const clock = new Intl.DateTimeFormat('sv-SE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Stockholm' });
 const fmt = value => value == null || (typeof value === 'number' && !Number.isFinite(value)) ? '—' : typeof value === 'number' ? number.format(value) : value;
 const pct = value => value == null ? '—' : `${decimal.format(value)} %`;
 const deltaText = value => value == null ? '—' : `${value > 0 ? '+' : value < 0 ? '−' : ''}${decimal.format(Math.abs(value))}`;
 function element(tag, className, text) { const node = document.createElement(tag); if (className) node.className = className; if (text != null) node.textContent = text; return node; }
+// Flashing is only armed around renders triggered by genuinely new data (a live
+// refresh or a replay step), never by view-only re-renders (area/sort/filter changes),
+// so switching context never falsely flashes numbers that merely differ by context.
+let flashEnabled = false;
+const previousValues = new Map();
+function flash(node) { if (!node) return; node.classList.remove('value-flash'); void node.offsetWidth; node.classList.add('value-flash'); }
+function flashed(key, value) { const previous = previousValues.get(key); previousValues.set(key, value); return flashEnabled && previous != null && previous !== value; }
+function withFlash(fn) { flashEnabled = true; try { fn(); } finally { flashEnabled = false; } }
+const FLASH_IDS = new Set(['header-districts', 'header-total', 'header-progress-pct', 'header-gap', 'districts', 'district-total', 'votes', 'turnout', 'eligible', 'blank', 'unregistered', 'other-invalid', 'invalid-total', 'valid-votes', 'invalid-previous', 'turnout-previous', 'counted-eligible', 'block-gap', 'block-other', 'region-count', 'completion-count', 'leader', 'mover', 'selection-share']);
 function set(id, value) {
   const node = $(id);
   // A partially loaded/older document should not abort the live refresh.
   // Optional widgets can be absent while the core result table still works.
-  if (node) node.textContent = value;
+  if (!node) return;
+  if (flashEnabled && FLASH_IDS.has(id) && node.dataset.flashSeen && node.textContent !== value) flash(node);
+  node.textContent = value;
+  node.dataset.flashSeen = '1';
 }
 function badge(p) { const node = element('span', 'party-badge', partyKey(p)); node.style.setProperty('--party-color', colors[partyKey(p)] || '#92958c'); return node; }
 const initial = new URLSearchParams(location.search);
 let area = initial.get('area') || '', selected = (initial.get('parties') || '').split(',').filter(Boolean);
-let data, liveData, busy = false, nextRefresh = Date.now() + 30000, liveOK = false;
+const REFRESH_INTERVAL_MS = 30000, COUNTDOWN_RING_CIRCUMFERENCE = 2 * Math.PI * 9;
+let data, liveData, busy = false, nextRefresh = Date.now() + REFRESH_INTERVAL_MS, liveOK = false;
 let history = [], replayIndex = -1, replayMode = false, playbackTimer, snapshotRequest = 0, playing = false;
 let geography = [], regionsLive = [], trends = [], trendsArea = null, trendRequest = 0;
 let trendWindowDistricts = 500;
@@ -124,15 +137,19 @@ function renderParties() {
       const bar = element('div', className); bar.style.width = `${Math.max(0, value || 0) / max * 100}%`; track.append(bar);
     }
     const threshold = element('span', 'threshold'); threshold.style.left = `${4 / max * 100}%`; track.append(threshold); chart.append(track);
-    const share = element('td', 'numeric share', pct(p.andelRoster));
+    const shareText = pct(p.andelRoster);
+    const share = element('td', `numeric share${flashed(`party:${key}:share`, shareText) ? ' value-flash' : ''}`, shareText);
     const change = element('td', 'numeric'), delta = baseline.delta;
-    change.append(element('span', `change ${delta > 0 ? 'positive' : delta < 0 ? 'negative' : 'neutral'}`, `${delta > 0 ? '↗ ' : delta < 0 ? '↘ ' : ''}${deltaText(delta)}`));
+    const changeText = `${delta > 0 ? '↗ ' : delta < 0 ? '↘ ' : ''}${deltaText(delta)}`;
+    change.append(element('span', `change ${delta > 0 ? 'positive' : delta < 0 ? 'negative' : 'neutral'}${flashed(`party:${key}:change`, changeText) ? ' value-flash' : ''}`, changeText));
     const updateDelta = currentTrend && previousTrend && currentTrend.shares?.[key] != null && previousTrend.shares?.[key] != null ? currentTrend.shares[key] - previousTrend.shares[key] : null;
     const voteDelta = currentTrend && previousTrend && currentTrend.votes?.[key] != null && previousTrend.votes?.[key] != null ? currentTrend.votes[key] - previousTrend.votes[key] : null;
-    const updateCell = element('td', 'numeric update-column'); updateCell.append(element('span', `change ${voteDelta > 0 ? 'positive' : voteDelta < 0 ? 'negative' : 'neutral'}`, voteDelta == null ? '—' : `${voteDelta > 0 ? '↗ +' : voteDelta < 0 ? '↘ −' : '→ '}${fmt(Math.abs(voteDelta))}`));
+    const updateText = voteDelta == null ? '—' : `${voteDelta > 0 ? '↗ +' : voteDelta < 0 ? '↘ −' : '→ '}${fmt(Math.abs(voteDelta))}`;
+    const updateCell = element('td', 'numeric update-column'); updateCell.append(element('span', `change ${voteDelta > 0 ? 'positive' : voteDelta < 0 ? 'negative' : 'neutral'}${flashed(`party:${key}:update`, updateText) ? ' value-flash' : ''}`, updateText));
     const partyVotes = numeric(p.antalRoster);
     const exactShare = validVotes > 0 && Number.isFinite(partyVotes) ? partyVotes / validVotes * 100 : null;
-    const voteCell = element('td', 'numeric vote-column'); voteCell.append(element('span', '', fmt(p.antalRoster)), element('small', 'exact-party-share', exactShare == null ? '—' : `${exactPartyDecimal.format(exactShare)} %`));
+    const votesText = fmt(p.antalRoster);
+    const voteCell = element('td', 'numeric vote-column'); voteCell.append(element('span', flashed(`party:${key}:votes`, votesText) ? 'value-flash' : '', votesText), element('small', 'exact-party-share', exactShare == null ? '—' : `${exactPartyDecimal.format(exactShare)} %`));
     row.append(nameCell, chart, share, change, updateCell, voteCell, element('td', 'numeric extra-column', pct(p.andelRosterForegaendeVal)), element('td', 'numeric extra-column', fmt(p.antalRosterForegaendeVal)));
     if (!expanded) return [row];
     const detailRow = element('tr', 'party-history-row'), cell = element('td'); cell.colSpan = 8;
@@ -220,6 +237,12 @@ function renderStats() {
   const progress = metrics.total ? metrics.districts / metrics.total * 100 : null;
   set('districts', fmt(metrics.districts)); set('district-total', `/ ${fmt(metrics.total)}`);
   set('header-districts', fmt(data?.antalValdistriktRaknade)); set('header-total', fmt(data?.antalValdistriktSomSkaRaknas));
+  const headerTotal = numeric(data?.antalValdistriktSomSkaRaknas), headerCounted = numeric(data?.antalValdistriktRaknade);
+  const headerProgress = headerTotal ? headerCounted / headerTotal * 100 : null;
+  $('header-progress-fill').style.width = `${Math.min(100, headerProgress || 0)}%`;
+  $('header-progress').setAttribute('aria-valuenow', String(Math.round(headerProgress || 0)));
+  $('header-progress').title = headerProgress == null ? 'Andel distrikt räknade saknas' : `${decimal.format(headerProgress)} % av distrikten räknade`;
+  set('header-progress-pct', headerProgress == null ? '—' : `${decimal.format(headerProgress)} %`);
   $('progress').style.width = `${Math.min(100, progress || 0)}%`;
   set('progress-label', progress == null ? 'Saknas i områdets sammanställning' : `${decimal.format(progress)} % av distrikten har rapporterat`);
   set('votes', fmt(metrics.votes)); set('turnout', pct(metrics.turnout)); set('eligible', fmt(metrics.eligible)); set('eligible-note', area ? 'I valt område · om källan redovisar det' : 'Totalt i hela riket');
@@ -273,7 +296,7 @@ function renderRegions() {
     const button = element('button', `region-card ${region.namn === area ? 'active-region' : ''}`); button.type = 'button';
     button.append(element('span', 'region-name', region.namn), element('span', 'region-arrow', '↗'));
     const result = element('span', 'region-result');
-    if (party) result.append(badge(party), element('strong', '', pct(party.andelRoster)), element('span', `change ${(party.forandringAndelRoster || 0) >= 0 ? 'positive' : 'negative'}`, `${deltaText(party.forandringAndelRoster)} pp`));
+    if (party) { const shareText = pct(party.andelRoster); result.append(badge(party), element('strong', flashed(`region:${region.namn}:share`, shareText) ? 'value-flash' : '', shareText), element('span', `change ${(party.forandringAndelRoster || 0) >= 0 ? 'positive' : 'negative'}`, `${deltaText(party.forandringAndelRoster)} pp`)); }
     else result.append(element('span', 'subtle', 'Inväntar röster'));
     const counted = Number(region.antalValdistriktRaknade), total = Number(region.antalValdistriktSomSkaRaknas);
     button.append(result, element('span', 'region-caption', `${party ? `${partyName(party)} · ` : ''}${fmt(region.rosterPaverkaMandat?.antalRoster)} giltiga röster`));
@@ -353,7 +376,8 @@ function renderBlocks() {
   $('block-cards').replaceChildren(...result.map(block => {
     const card = element('article', `block-card block-${block.key}`);
     const title = element('div', 'block-card-heading'); title.append(element('h3', '', block.label), element('span', '', block.parties.join(' + ')));
-    const metric = element('div', 'block-metric'); metric.append(element('strong', '', pct(block.share)), element('span', 'subtle', `${fmt(block.votes)} röster`));
+    const shareText = pct(block.share);
+    const metric = element('div', 'block-metric'); metric.append(element('strong', flashed(`block:${block.key}:share`, shareText) ? 'value-flash' : '', shareText), element('span', 'subtle', `${fmt(block.votes)} röster`));
     const members = element('div', 'block-members');
     block.parties.forEach((key, index) => { const member = element('span'); member.append(badge({ partiforkortning: key }), document.createTextNode(pct(block.members[index]?.andelRoster))); members.append(member); });
     card.append(title, metric, members, element('p', 'subtle', block.delta == null || data?.jamforbar === false ? 'Jämförelse med 2022 saknas' : `${deltaText(block.delta)} procentenheter mot 2022`));
@@ -380,14 +404,14 @@ function renderMandates() {
   else { set('mandate-mode', area ? 'Rikstäckande metod · illustrativ regional uppskattning' : 'Beräknad uppskattning · modifierad Sainte-Laguë'); set('mandate-note', area ? 'Regionala mandat uppskattas proportionellt för att jämföra områdets styrkeförhållande. Det är inte en officiell valkretsfördelning.' : 'Mandatfördelningen är en uppskattning från röstandelarna. Valmyndighetens officiella mandat räknas separat när de publiceras.'); }
   if (!estimate) { $('mandate-summary').replaceChildren(element('span', 'empty-state', 'Mandat kan visas när tillräckliga partier och giltiga röster har publicerats.')); $('mandate-party-list').replaceChildren(); $('mandate-margins').replaceChildren(); return; }
   const [left, right] = blockResults(current), leftSeats = estimate.parties.filter(p => ['S','V','MP','C'].includes(p.key)).reduce((sum,p)=>sum+p.seats,0), rightSeats = estimate.parties.filter(p => ['M','KD','SD','L'].includes(p.key)).reduce((sum,p)=>sum+p.seats,0);
-  $('mandate-summary').replaceChildren(...[['Vänster',leftSeats,'block-left'],['Höger',rightSeats,'block-right'],['Övriga / under 4 %',Math.max(0,estimate.seats-leftSeats-rightSeats),'block-other']].map(([label,seats,kind])=>{const card=element('article','mandate-card '+kind);card.append(element('span','',label),element('strong','',String(seats)),element('small','',`av ${estimate.seats} platser`));return card;}));
+  $('mandate-summary').replaceChildren(...[['Vänster',leftSeats,'block-left'],['Höger',rightSeats,'block-right'],['Övriga / under 4 %',Math.max(0,estimate.seats-leftSeats-rightSeats),'block-other']].map(([label,seats,kind])=>{const card=element('article','mandate-card '+kind);card.append(element('span','',label),element('strong',flashed(`mandate-summary:${kind}`,String(seats))?'value-flash':'',String(seats)),element('small','',`av ${estimate.seats} platser`));return card;}));
   const margins = mandateMargins(current, area ? 29 : 349);
   $('mandate-margins').replaceChildren(
     element('span', 'mandate-margin-title', 'Närmast mandatgränsen'),
     element('span', '', `Vinner nästa: ${margins.gain.name} (${margins.gain.key})`),
     element('span', '', `Mest utsatt: ${margins.lose.name} (${margins.lose.key})`)
   );
-  $('mandate-party-list').replaceChildren(...estimate.parties.map(p=>{const rp=range?.parties.find(item=>item.key===p.key) || p;const row=element('div','mandate-party');row.append(element('span','mandate-party-name',p.key+' '+p.name),element('span','mandate-share',`${pct(p.share)} · ${rp.low}–${rp.high}`),element('strong','',String(p.seats)));const track=element('div','mandate-seat-track');const band=element('i','mandate-seat-band');band.style.left=`${rp.low/estimate.seats*100}%`;band.style.width=`${Math.max(0,(rp.high-rp.low)/estimate.seats*100)}%`;band.style.background=colors[p.key]||'#92958c';const marker=element('b','mandate-seat-marker');marker.style.left=`${p.seats/estimate.seats*100}%`;marker.style.borderColor=colors[p.key]||'#92958c';track.append(band,marker);row.append(track);return row;}));
+  $('mandate-party-list').replaceChildren(...estimate.parties.map(p=>{const rp=range?.parties.find(item=>item.key===p.key) || p;const row=element('div','mandate-party');row.append(element('span','mandate-party-name',p.key+' '+p.name),element('span','mandate-share',`${pct(p.share)} · ${rp.low}–${rp.high}`),element('strong',flashed(`mandate-party:${p.key}:seats`,String(p.seats))?'value-flash':'',String(p.seats)));const track=element('div','mandate-seat-track');const band=element('i','mandate-seat-band');band.style.left=`${rp.low/estimate.seats*100}%`;band.style.width=`${Math.max(0,(rp.high-rp.low)/estimate.seats*100)}%`;band.style.background=colors[p.key]||'#92958c';const marker=element('b','mandate-seat-marker');marker.style.left=`${p.seats/estimate.seats*100}%`;marker.style.borderColor=colors[p.key]||'#92958c';track.append(band,marker);row.append(track);return row;}));
   set('mandate-note', `${area ? 'Regional uppskattning med 29 platser som skala.' : 'Uppskattning med 349 platser och modifierad Sainte-Laguë.'} Intervallet (lågt–högt) visar hur platserna kan variera med en försiktig osäkerhetsmarginal baserad på hur stor del av distrikten som är räknad (${range ? decimal.format(range.margin) : '—'} procentenheter). Detta är inte en prognos; officiella mandat ersätter uppskattningen när Valmyndigheten publicerar dem.`);
 }
 function renderNightStory() { renderStories({ trends, trendsArea, area, history, replayIndex, replayMode, showSnapshot, stopPlayback }); }
@@ -436,7 +460,7 @@ async function loadRegions() {
     const response = await fetch('/api/regions', { cache: 'no-store', signal: AbortSignal.timeout(20000) });
     if (!response.ok) throw new Error('Regional feeds unavailable');
     regionsLive = await response.json();
-    renderRegions(); renderCompletion();
+    withFlash(() => { renderRegions(); renderCompletion(); });
   } catch { set('region-count', 'Regionala flöden kunde inte hämtas'); }
 }
 async function refresh() {
@@ -448,7 +472,7 @@ async function refresh() {
     const result = await response.json();
     if (!Array.isArray(result.data?.rosterPaverkaMandat?.partiroster)) throw new Error('Invalid data');
     liveData = result.data;
-    if (!replayMode) { data = liveData; render(); }
+    if (!replayMode) { data = liveData; withFlash(render); }
     connection(!result.stale, 'Källan kunde inte nås. Senast hämtade resultat visas. Vi försöker automatiskt igen.');
     await loadHistory();
     loadRegions();
@@ -458,7 +482,7 @@ async function refresh() {
     console.error(error);
     connection(false, data ? `Liveflödet kunde inte nås (${error?.message || 'okänt fel'}). Senast visade resultat ligger kvar.` : `Resultatet kunde inte hämtas (${error?.message || 'okänt fel'}).`);
     await loadHistory(); // The saved archive remains useful even when the live feed is offline.
-  } finally { busy = false; $('refresh').disabled = false; nextRefresh = Date.now() + 30000; }
+  } finally { busy = false; $('refresh').disabled = false; nextRefresh = Date.now() + REFRESH_INTERVAL_MS; }
 }
 function stopPlayback() { playing = false; clearTimeout(playbackTimer); set('play', '▶ Spela upp'); }
 function updateTimeline() {
@@ -497,7 +521,7 @@ async function showSnapshot(index) {
       if (snapshotCache.size > 20) snapshotCache.delete(snapshotCache.keys().next().value);
     }
     if (request !== snapshotRequest) return false;
-    replayMode = true; replayIndex = index; data = snapshot.data; render(); updateTimeline(); saveURL();
+    replayMode = true; replayIndex = index; data = snapshot.data; withFlash(render); updateTimeline(); saveURL();
     connection(liveOK, $('error').textContent); return true;
   } catch {
     if (request !== snapshotRequest) return false;
@@ -516,7 +540,7 @@ $('play').addEventListener('click', async () => { if (playing) { stopPlayback();
 $('timeline').addEventListener('input', () => { stopPlayback(); showSnapshot(Number($('timeline').value)); });
 $('previous').addEventListener('click', () => { stopPlayback(); showSnapshot(replayMode ? replayIndex - 1 : history.length - 2); });
 $('next').addEventListener('click', () => { stopPlayback(); showSnapshot(replayIndex + 1); });
-$('go-live').addEventListener('click', () => { stopPlayback(); ++snapshotRequest; replayMode = false; if (liveData) { data = liveData; render(); } updateTimeline(); connection(liveOK, $('error').textContent); saveURL(); refresh(); });
+$('go-live').addEventListener('click', () => { stopPlayback(); ++snapshotRequest; replayMode = false; if (liveData) { data = liveData; withFlash(render); } updateTimeline(); connection(liveOK, $('error').textContent); saveURL(); refresh(); });
 $('area').addEventListener('change', () => changeArea($('area').value));
 for (const id of ['comparison', 'sort', 'threshold-filter', 'details-toggle']) $(id).addEventListener('change', () => { render(); saveURL(); });
 $('party-search').addEventListener('input', () => { renderParties(); saveURL(); });
@@ -535,7 +559,17 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) refr
 for (const [id, param] of [['comparison', 'compare'], ['sort', 'sort'], ['threshold-filter', 'threshold']]) { const value = initial.get(param); if (value && [...$(id).options].some(option => option.value === value)) $(id).value = value; }
 $('party-search').value = initial.get('q') || ''; $('details-toggle').checked = initial.get('details') === '1';
 fetch('/geography.json').then(response => response.json()).then(value => { geography = value; renderFilters(); }).catch(() => {});
-setInterval(() => { if (document.hidden) return; const seconds = Math.max(0, Math.ceil((nextRefresh - Date.now()) / 1000)); set('countdown', busy ? 'Hämtar senaste resultat…' : `Nästa uppdatering om ${seconds} s`); if (seconds === 0) refresh(); }, 1000);
+$('countdown-ring-fill').style.strokeDasharray = `${COUNTDOWN_RING_CIRCUMFERENCE} ${COUNTDOWN_RING_CIRCUMFERENCE}`;
+setInterval(() => {
+  if (document.hidden) return;
+  const seconds = Math.max(0, Math.ceil((nextRefresh - Date.now()) / 1000));
+  const label = busy ? 'Hämtar senaste resultat…' : `Nästa uppdatering om ${seconds} s`;
+  $('countdown').classList.toggle('busy', busy);
+  $('countdown').title = label;
+  set('countdown-text', label);
+  if (!busy) $('countdown-ring-fill').style.strokeDashoffset = String(COUNTDOWN_RING_CIRCUMFERENCE * (1 - seconds / (REFRESH_INTERVAL_MS / 1000)));
+  if (seconds === 0) refresh();
+}, 1000);
 matchMedia('(max-width: 700px)').addEventListener('change', () => refreshPartyHistories());
 renderFilters(); refresh();
 loadRegions();
