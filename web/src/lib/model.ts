@@ -58,7 +58,7 @@ export function blockResults(data: ElectionData | null | undefined): BlockResult
   });
 }
 
-interface SeatAllocation {
+export interface SeatAllocation {
   seats: number;
   threshold: number;
   totalVotes: number;

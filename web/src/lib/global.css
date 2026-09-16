@@ -27,4 +27,5 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; }
 .value-flash { animation: value-flash 1.7s ease-out; }
 @media (prefers-reduced-motion: reduce) {
   .value-flash { animation: none; }
+  *, *::before, *::after { scroll-behavior: auto !important; }
 }

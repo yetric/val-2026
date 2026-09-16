@@ -3,6 +3,7 @@
   import { currentView } from './currentView.svelte.ts';
   import { blockResults } from './model.ts';
   import { tween } from './tween.ts';
+  import LiveStatusCenter from './LiveStatusCenter.svelte';
 
   const RING_R = 9;
   const RING_C = 2 * Math.PI * RING_R;
@@ -62,7 +63,7 @@
       </svg>
       <span class="sr-only">{countdownLabel}</span>
     </span>
-    <span class="live-tag">Live</span>
+    <LiveStatusCenter />
   </div>
   <a class="source-link" href="https://resultat.val.se/val2026/RD?r=P" target="_blank" rel="noopener">
     Valmyndigheten <span>↗</span>
@@ -93,9 +94,16 @@
   .countdown-ring-fill { fill: none; stroke: var(--red-bright); stroke-width: 2.4; transition: stroke-dashoffset 1s linear; }
   .header-countdown.busy .countdown-ring-fill { transition: none; animation: countdown-pulse 1s ease-in-out infinite; }
   @keyframes countdown-pulse { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
-  .live-tag { background: var(--red); color: #fff; font-weight: 700; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 9px; }
   @media (prefers-reduced-motion: reduce) {
     .countdown-ring-fill { transition: none; }
     .header-countdown.busy .countdown-ring-fill { animation: none; opacity: .7; }
+  }
+  @media (max-width: 700px) {
+    header { height: 64px; padding: 0 16px; gap: 12px; }
+    .brand { flex-shrink: 0; }
+    .header-status { min-width: 0; flex: 1; gap: 8px; margin: 0; justify-content: flex-end; }
+    .header-count { min-width: 0; font-size: 11px; }
+    .header-progress-row { gap: 4px; }
+    .header-divider, #header-gap, .source-link { display: none; }
   }
 </style>

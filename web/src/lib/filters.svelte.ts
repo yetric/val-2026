@@ -23,6 +23,7 @@ function createFilters() {
   return {
     get area() { return area; }, set area(value: string) { area = value; },
     get selected() { return selected; },
+    setSelected(value: string[]) { selected = [...new Set(value)]; },
     toggleParty,
     get comparisonMode() { return comparisonMode; }, set comparisonMode(value: ComparisonMode) { comparisonMode = value; },
     get sort() { return sort; }, set sort(value: SortMode) { sort = value; },

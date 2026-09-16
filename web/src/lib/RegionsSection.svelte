@@ -66,8 +66,9 @@
       {@const counted = numeric(region.antalValdistriktRaknade) ?? 0}
       {@const total = numeric(region.antalValdistriktSomSkaRaknas) ?? 0}
       {@const percent = total > 0 ? Math.min(100, (counted / total) * 100) : null}
-      <button type="button" class="region-card" class:active={region.namn === filters.area} onclick={() => (filters.area = region.namn || '')}>
-        <span class="region-name">{region.namn}</span>
+      {@const complete = total > 0 && counted >= total}
+      <button type="button" class="region-card" class:active={region.namn === filters.area} class:complete onclick={() => (filters.area = region.namn || '')}>
+        <span class="region-name">{region.namn} {#if complete}<b class="complete-badge">✓ Klar</b>{/if}</span>
         {#if party}
           <span class="region-result">
             <span class="mini-badge" style="background: {colors[partyKey(party)] || '#92958c'}">{partyKey(party)}</span>
@@ -100,7 +101,10 @@
   .region-card { text-align: left; border: 0; background: var(--panel); padding: 14px; cursor: pointer; font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 6px; }
   .region-card:hover { background: #1e1e22; }
   .region-card.active { box-shadow: inset 0 0 0 1px var(--red-bright); }
+  .region-card.complete { box-shadow: inset 0 0 0 1px var(--green-up); }
+  .region-card.complete.active { box-shadow: inset 0 0 0 2px var(--green-up); }
   .region-name { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.3px; }
+  .complete-badge { color: var(--green-up); font-size: 10px; letter-spacing: .5px; white-space: nowrap; }
   .region-result { display: flex; align-items: center; gap: 8px; }
   .region-result strong { font-family: var(--font-display); font-size: 19px; font-weight: 700; }
   .mini-badge { display: inline-grid; place-items: center; width: 16px; height: 16px; color: #fff; font-family: var(--font-display); font-size: 9px; font-weight: 700; }
@@ -110,4 +114,5 @@
   .region-caption { font-size: 10px; color: var(--muted); }
   .region-progress { display: block; height: 3px; background: var(--line-soft); overflow: hidden; }
   .region-progress i { display: block; height: 100%; background: var(--text); }
+  .region-card.complete .region-progress i { background: var(--green-up); }
 </style>

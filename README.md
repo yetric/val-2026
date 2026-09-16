@@ -1,14 +1,41 @@
 # Val2026 live + replay
 
-A Swedish election-night dashboard with live national results, party comparisons and persistent historical playback. Node.js 22+; no runtime dependencies.
+Val2026 is a Swedish election-night dashboard with live national and regional results, party comparisons, persistent historical playback, and an accessible Svelte UI. The preferred frontend is the Svelte/Vite application in `web/`; the real election-data backend is the standalone TypeScript service in `server/`.
+
+## Run the preferred Svelte UI
+
+Requirements: Node.js 24+ for the standalone TypeScript backend.
+
+Start the backend in one terminal:
 
 ```sh
-npm start
-# Open http://localhost:3000
-npm test
+cd server
+npm install
+npm run dev
 ```
 
-The server fetches https://resultat.val.se/data/resultat/val2026/RD_P.json every 30 seconds, even without an open browser. A shared 15-second cache coalesces browser requests. Source failures retain the last successful live response with a warning. The browser pauses polling in hidden tabs and refreshes on return.
+Start the Svelte development server in another:
+
+```sh
+cd web
+npm install
+npm run dev
+# Open http://localhost:5173
+```
+
+Vite proxies `/api`, `/geography.json`, and `/districts.json` to the backend on port 3001. For a production frontend build (serve the generated assets from a host that proxies `/api` to the backend):
+
+```sh
+cd web
+npm run build
+# `npm run preview` is useful for checking the static build locally.
+```
+
+The root `npm test` command runs the backend test suite. The frontend can be checked with `cd web && npx svelte-check --tsconfig ./tsconfig.json`.
+
+The backend fetches https://resultat.val.se/data/resultat/val2026/RD_P.json every 30 seconds, even without an open browser. A shared 15-second cache coalesces browser requests. Source failures retain the last successful live response with a warning. Browser polling pauses in hidden tabs and refreshes immediately on return. Regional feeds are fetched through `/api/regions`.
+
+`server/src/index.ts` is the production backend used by the Svelte UI. The root `server.js` and `public/` frontend remain as a legacy compatibility path on port 3000; they are not the preferred UI or deployment entrypoint.
 
 ## Recording and replay
 
@@ -26,6 +53,10 @@ The only external frontend resource is Google Fonts; system sans-serif fallbacks
 
 ## Explore results
 
+- The Svelte UI includes a live/replay status center, completion notifications, mandate-change notifications, optional browser notifications and optional local audio cues.
+- Use the comparison workspace for side-by-side regions or municipalities, the interactive constituency map, personal watchlists, shareable URLs, a keyboard command palette (`Ctrl/Cmd+K` or `/`), mobile election-night navigation, and a personalized briefing.
+- Mandate estimates are explicitly labelled separately from official source mandates. Estimated results include methodology, 4% threshold caveats, and scenario intervals; they are not forecasts or official decisions.
+- The provenance panel shows the source endpoint, source update time, Val2026 fetch time, replay archive state, stale/error state, and source correction messages.
 - Select a constituency, select multiple parties, search party names, and filter shares above/below 4%.
 - Compare against 2022 or the national result from the same snapshot; reveal previous vote totals in the expanded table.
 - Expand a party row to see its individual night-long history, first/latest vote share, and change since recording began. Scrub or click the chart and use “Visa denna tidpunkt” to replay that observation; multiple rows can stay open.
@@ -35,6 +66,7 @@ The only external frontend resource is Google Fonts; system sans-serif fallbacks
 - Left block: S + V + MP + C. Right block: M + KD + SD + L. Shares use exact vote counts divided by all valid votes, with other parties shown separately. Block cards follow area and time, independently of party filters. They are not seat predictions.
 - The mandate section also identifies the party with the strongest quotient for the next mandate and the party with the weakest quotient for its current last mandate. This is a Sainte-Laguë margin indicator, not a forecast of the final result.
 - Download the filtered table as CSV or the full snapshot as JSON. Share-view copies the URL including area, party filters, comparison and selected replay snapshot.
+- Product-improvement analytics are opt-in and local-only. No identifiers, accounts, IP addresses, or election-result payloads are sent; users can export or delete the aggregate counters from the notification settings.
 - Regional zero-filled counting metadata is displayed as unavailable. Regional votes and invalid votes are retained as published.
 
 ## Temporary public sharing

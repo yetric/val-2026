@@ -11,6 +11,7 @@
 
   const metrics = $derived(areaMetrics(currentView.area, Boolean(filters.area)));
   const progress = $derived(metrics.total ? ((metrics.districts ?? 0) / metrics.total) * 100 : null);
+  const complete = $derived(metrics.total != null && metrics.districts != null && metrics.districts >= metrics.total);
 
   // Rough estimate, not a forecast: assumes eligible voters split evenly
   // across districts, then applies the turnout already seen so far to
@@ -25,7 +26,7 @@
 </script>
 
 <section class="hero-stat" aria-label="Räkningens framsteg">
-  <div class="hero-label">Distrikt räknade</div>
+  <div class="hero-label">Distrikt räknade {#if complete}<span class="complete-badge">✓ Färdigräknat</span>{/if}</div>
   <div class="hero-number">
     <span use:tween={{ value: metrics.districts, format: fmt, version: currentView.data }}></span>
     <small>av {fmt(metrics.total)}</small>
@@ -56,6 +57,7 @@
 
 <style>
   .hero-label, .stat-label { font-family: var(--font-display); font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); }
+  .complete-badge { display: inline-block; margin-left: 10px; padding: 3px 7px; border: 1px solid var(--green-up); color: var(--green-up); font-size: 10px; letter-spacing: 1px; vertical-align: 2px; }
   .hero-stat { margin-bottom: 32px; }
   .hero-number { display: flex; align-items: baseline; gap: 14px; margin-top: 6px; }
   .hero-number span { font-family: var(--font-display); font-weight: 800; font-size: 96px; line-height: 0.95; letter-spacing: -1px; }
@@ -68,4 +70,7 @@
   .stat { background: var(--panel); padding: 16px 20px; }
   .stat-number { font-family: var(--font-display); font-size: 32px; font-weight: 700; margin-top: 6px; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .stat-note { font-family: var(--font-display); font-size: 12px; color: var(--muted); margin: 6px 0 0; cursor: default; }
+  @media (prefers-reduced-motion: reduce) {
+    .progress-fill { transition: none; }
+  }
 </style>

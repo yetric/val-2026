@@ -16,11 +16,24 @@
   import MoreData from './lib/MoreData.svelte';
   import FullscreenPanel from './lib/FullscreenPanel.svelte';
   import LiveTicker from './lib/LiveTicker.svelte';
+  import Notifications from './lib/Notifications.svelte';
+  import Watchlist from './lib/Watchlist.svelte';
+  import ResultsMap from './lib/ResultsMap.svelte';
+  import AreaContext from './lib/AreaContext.svelte';
+  import ComparisonWorkspace from './lib/ComparisonWorkspace.svelte';
+  import ShareButton from './lib/ShareButton.svelte';
+  import LiveUpdateSummary from './lib/LiveUpdateSummary.svelte';
+  import CommandPalette from './lib/CommandPalette.svelte';
+  import MobileElectionMode from './lib/MobileElectionMode.svelte';
+  import ProvenancePanel from './lib/ProvenancePanel.svelte';
+  import PersonalBriefing from './lib/PersonalBriefing.svelte';
   import { liveResults } from './lib/liveResults.svelte.ts';
-  import { filters } from './lib/filters.svelte.ts';
 </script>
 
 <Header />
+<CommandPalette />
+<Notifications />
+<LiveUpdateSummary />
 
 <main>
   {#if !liveResults.data}
@@ -34,19 +47,24 @@
     </FullscreenPanel>
     <Insights />
     <FilterBar />
-    {#if filters.area}
-      <p class="scope-banner">Visar <strong>{filters.area}</strong> · <button type="button" onclick={() => (filters.area = '')}>Visa hela riket</button></p>
-    {/if}
+    <Watchlist />
+    <PersonalBriefing />
+    <AreaContext />
+    <ComparisonWorkspace />
     <ReplayControls />
+    <ShareButton />
     <FullscreenPanel><ResultsTable /></FullscreenPanel>
     <NightStory />
     <FullscreenPanel><BlocksSection /></FullscreenPanel>
     <FullscreenPanel><TrendSection /></FullscreenPanel>
     <RegionsSection />
+    <ResultsMap />
     <FullscreenPanel><MandatesSection /></FullscreenPanel>
     <MoreData />
+    <ProvenancePanel />
     <CompletionSection />
     <DistrictFinder />
+    <MobileElectionMode />
   {/if}
 </main>
 
@@ -55,7 +73,8 @@
 <style>
   main { max-width: 1320px; margin: auto; padding: 32px 40px 60px; }
   .status { color: var(--muted); font-size: 13px; font-family: var(--font-display); }
-  .scope-banner { font-family: var(--font-display); font-size: 13px; color: var(--text); background: transparent; border-left: 3px solid var(--red); padding: 8px 14px; margin: -24px 0 44px; }
-  .scope-banner button { border: 0; background: none; color: var(--red-bright); text-decoration: underline; cursor: pointer; font: inherit; padding: 0; margin-left: 4px; }
   .ticker-bar { position: sticky; bottom: 0; z-index: 15; }
+  @media (max-width: 700px) {
+    main { padding: 22px 16px 138px; }
+  }
 </style>
