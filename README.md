@@ -2,6 +2,8 @@
 
 Val2026 is a Swedish election-night dashboard with live national and regional results, party comparisons, persistent historical playback, and an accessible Svelte UI. The preferred frontend is the Svelte/Vite application in `web/`; the real election-data backend is the standalone TypeScript service in `server/`.
 
+<img width="1286" height="1097" alt="image" src="https://github.com/user-attachments/assets/a95f877f-295e-488e-af92-bd033d5b2091" />
+
 ## Run the preferred Svelte UI
 
 Requirements: Node.js 24+ for the standalone TypeScript backend.
