@@ -98,15 +98,20 @@ export interface ResultsResponse {
   archiveError?: boolean;
 }
 
-// A single point on the /api/trends curve (one per saved snapshot).
+// A single point on the /api/trends curve (one per saved snapshot). Shape
+// comes from history.js's trends(): nationalFacts/regionalFacts spread in,
+// plus id/capturedAt/districts/total/sourceUpdatedAt/shares/votes.
 export interface TrendPoint {
   id: string;
+  capturedAt: number;
   districts: number;
   total: number;
-  countedVotes?: number;
-  blockGap?: number;
+  sourceUpdatedAt?: string;
+  countedVotes: number | null;
+  blockGap: number | null;
+  exactShares: Record<string, number> | null;
   shares: Record<string, number> | null;
-  exactShares?: Record<string, number>;
+  votes: Record<string, number> | null;
 }
 
 export interface RecentChanges {
@@ -114,6 +119,20 @@ export interface RecentChanges {
   votes: number | null;
   gap: number | null;
   parties: { key: string; delta: number }[];
+}
+
+export interface DistrictSummary {
+  name: string;
+  code: string;
+  region: string;
+  regionCode: string;
+  municipality: string;
+  municipalityCode: string;
+}
+
+export interface GeographyRegion {
+  name: string;
+  code: string;
 }
 
 export type MilestoneEvent =

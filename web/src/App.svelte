@@ -7,6 +7,9 @@
   import MandatesSection from './lib/MandatesSection.svelte';
   import RegionsSection from './lib/RegionsSection.svelte';
   import CompletionSection from './lib/CompletionSection.svelte';
+  import NightStory from './lib/NightStory.svelte';
+  import TrendSection from './lib/TrendSection.svelte';
+  import DistrictFinder from './lib/DistrictFinder.svelte';
   import { liveResults } from './lib/liveResults.svelte.ts';
   import { filters } from './lib/filters.svelte.ts';
 </script>
@@ -25,10 +28,13 @@
     {/if}
     <ReplayControls />
     <ResultsTable />
+    <NightStory />
     <BlocksSection />
-    <MandatesSection />
+    <TrendSection />
     <RegionsSection />
+    <MandatesSection />
     <CompletionSection />
+    <DistrictFinder />
   {/if}
 </main>
 
