@@ -10,6 +10,9 @@
   import NightStory from './lib/NightStory.svelte';
   import TrendSection from './lib/TrendSection.svelte';
   import DistrictFinder from './lib/DistrictFinder.svelte';
+  import StatsCards from './lib/StatsCards.svelte';
+  import Insights from './lib/Insights.svelte';
+  import MoreData from './lib/MoreData.svelte';
   import { liveResults } from './lib/liveResults.svelte.ts';
   import { filters } from './lib/filters.svelte.ts';
 </script>
@@ -26,6 +29,8 @@
     {#if filters.area}
       <p class="scope-banner">Visar <strong>{filters.area}</strong> · <button type="button" onclick={() => (filters.area = '')}>Visa hela riket</button></p>
     {/if}
+    <StatsCards />
+    <Insights />
     <ReplayControls />
     <ResultsTable />
     <NightStory />
@@ -33,6 +38,7 @@
     <TrendSection />
     <RegionsSection />
     <MandatesSection />
+    <MoreData />
     <CompletionSection />
     <DistrictFinder />
   {/if}

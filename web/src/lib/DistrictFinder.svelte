@@ -1,6 +1,7 @@
 <script lang="ts">
   import { partyKey, partiesFor } from './model.ts';
-  import type { DistrictSummary, GeographyRegion, ElectionData } from './types.ts';
+  import { geography } from './geography.svelte.ts';
+  import type { DistrictSummary, ElectionData } from './types.ts';
 
   const decimal = new Intl.NumberFormat('sv-SE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const number = new Intl.NumberFormat('sv-SE');
@@ -13,14 +14,11 @@
   let results = $state<DistrictSummary[]>([]);
   let total = $state(0);
   let searched = $state(false);
-  let geography = $state<GeographyRegion[]>([]);
   let selected = $state<DistrictSummary | null>(null);
   let detail = $state<ElectionData | null>(null);
   let detailError = $state(false);
   let detailLoading = $state(false);
   let searchTimer: ReturnType<typeof setTimeout>;
-
-  fetch('/geography.json').then(response => response.json()).then((value: GeographyRegion[]) => { geography = value; }).catch(() => {});
 
   async function search() {
     if (query.trim().length < 2 && !regionFilter) { results = []; total = 0; searched = false; return; }
@@ -61,7 +59,7 @@
     <input type="search" placeholder="Till exempel Gustavstorp, Karlshamn eller Blekinge" bind:value={query} oninput={onQueryInput} autocomplete="off" />
     <select bind:value={regionFilter} onchange={search}>
       <option value="">Alla län</option>
-      {#each geography as region (region.code)}<option value={region.name}>{region.name}</option>{/each}
+      {#each geography.regions as region (region.code)}<option value={region.name}>{region.name}</option>{/each}
     </select>
   </div>
   <div class="district-results">
