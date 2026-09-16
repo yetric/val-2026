@@ -74,11 +74,12 @@
       <input type="checkbox" bind:checked={filters.detailsExpanded} /> Fler kolumner
     </label>
     <div class="filter-actions">
-      <button type="button" onclick={exportCsv}>↓ CSV</button>
-      <button type="button" onclick={exportJson} disabled={!currentView.data}>↓ JSON</button>
-      <button type="button" onclick={() => filters.reset()}>Återställ</button>
+      <button id="export-csv" type="button" title="Ladda ner de filtrerade raderna som CSV" aria-label="Exportera filtrerade resultat som CSV" onclick={exportCsv}>↓ CSV</button>
+      <button id="export-json" type="button" title="Ladda ner hela ögonblicksbilden som JSON" aria-label="Exportera ögonblicksbild som JSON" onclick={exportJson} disabled={!currentView.data}>↓ JSON</button>
+      <button type="button" aria-label="Återställ alla filter" onclick={() => filters.reset()}>Återställ</button>
     </div>
   </div>
+  <p class="export-note">Exporten följer valt område och läge. CSV innehåller filtrerade partier; JSON innehåller hela ögonblicksbilden.</p>
   <div class="party-filter-line">
     {#each available as p (partyKey(p))}
       <button type="button" class="party-chip" class:selected={filters.selected.includes(partyKey(p))}
@@ -99,6 +100,7 @@
   .check-label { flex-direction: row !important; align-items: center; gap: 6px !important; }
   .area-field select { min-width: 180px; }
   .filter-actions { display: flex; gap: 8px; margin-left: auto; }
+  .export-note { margin: 12px 0 0; color: var(--muted); font-size: 11px; }
   button[type='button']:disabled { opacity: 0.5; cursor: default; }
   button[type='button'] { border: 1px solid var(--line); background: transparent; padding: 8px 12px; color: var(--text); font-family: var(--font-display); font-size: 12px; letter-spacing: 0.5px; cursor: pointer; }
   button[type='button']:hover:not(:disabled) { border-color: var(--muted); }

@@ -77,4 +77,7 @@
   .vote-column { font-size: 12px; color: var(--muted); }
   .exact-share { display: block; color: var(--muted); font-size: 10px; opacity: 0.7; }
   .extra-column { color: var(--muted); font-size: 12px; }
+  @media (prefers-reduced-motion: reduce) {
+    .bar-previous, .bar-current { transition: none; }
+  }
 </style>

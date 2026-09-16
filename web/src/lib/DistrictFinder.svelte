@@ -48,6 +48,7 @@
   }
 
   const topParties = $derived(detail ? [...partiesFor(detail)].sort((a, b) => b.antalRoster - a.antalRoster).slice(0, 5) : []);
+  const detailComplete = $derived(Boolean(detail && detail.antalValdistriktSomSkaRaknas > 0 && detail.antalValdistriktRaknade >= detail.antalValdistriktSomSkaRaknas));
 </script>
 
 <section class="district-finder" id="district-finder">
@@ -83,7 +84,7 @@
       {:else if detailError}
         <p class="error">Distriktsresultatet kunde inte hämtas just nu.</p>
       {:else if detail}
-        <div class="district-detail-heading">{detail.namn} · {selected.municipality}</div>
+        <div class="district-detail-heading">{detail.namn} · {selected.municipality} {#if detailComplete}<span class="complete-badge">✓ Färdigräknat</span>{/if}</div>
         <p class="subtle">{detail.antalValdistriktRaknade} av {detail.antalValdistriktSomSkaRaknas} distrikt · {detail.valdeltagande || 'valdeltagande saknas'} · källa uppdaterad {detail.senasteUppdateringstid || '—'}</p>
         <div class="district-party-list">
           {#each topParties as p (partyKey(p))}
@@ -119,6 +120,7 @@
   .district-result span { font-size: 10px; color: var(--muted); }
   .district-detail { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
   .district-detail-heading { font-family: var(--font-display); font-size: 15px; font-weight: 700; }
+  .complete-badge { display: inline-block; margin-left: 8px; padding: 3px 7px; border: 1px solid var(--green-up); color: var(--green-up); font-size: 10px; letter-spacing: .7px; vertical-align: 2px; }
   .district-party-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; margin: 10px 0; }
   .district-party-list > div { display: flex; align-items: baseline; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line-soft); font-size: 12px; }
   .district-party-list strong { font-family: var(--font-display); width: 26px; }

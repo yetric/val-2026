@@ -12,6 +12,10 @@
   const signed = (value: number) => `${value > 0 ? '+' : value < 0 ? '−' : ''}${dec.format(Math.abs(value))}`;
   const whole = (value: number) => `${value > 0 ? '+' : value < 0 ? '−' : ''}${number.format(Math.abs(value))}`;
   const title = (area: string) => area || 'Hela riket';
+  const eventKind = (event: MilestoneEvent) =>
+    event.type === 'district' ? 'Räkning' :
+    event.type === 'threshold' ? 'Tröskel' :
+    event.type === 'lead' ? 'Ledning' : 'Start';
 
   let initialVisitId: string | null = null;
   try { initialVisitId = localStorage.getItem('val2026-last-observation'); } catch { /* private mode */ }
@@ -188,7 +192,7 @@
 
 <section class="night-milestones">
   <div class="section-top">
-    <div><div class="eyebrow">MILSTOLPAR</div><h2>Vägen hit</h2></div>
+    <div><div class="eyebrow">MILSTOLPAR</div><h2>Valnattens tidslinje</h2></div>
     <label class="sort-label">Visa
       <select bind:value={milestoneFilter} onchange={() => (eventLimit = 8)}>
         <option value="all">Alla händelser</option>
@@ -199,7 +203,7 @@
     </label>
   </div>
   <p class="subtle">{historyStore.replayMode ? 'Händelser fram till vald replay-tidpunkt.' : 'Händelser i den sparade inspelningen.'} {filters.area ? `Blockbyten gäller ${filters.area}; distriktsmilstolpar gäller hela riket. Passager vid 4 % visas endast för hela riket.` : 'Passager vid 4 % är observerade röstandelar, inte besked om mandat.'} Tidpunkter avser när vi hämtade resultatet.</p>
-  <div class="milestone-list">
+  <div class="milestone-list" aria-label="Kronologisk tidslinje över observerade händelser">
     {#if !visibleMilestones.length}
       <p class="empty-state">Inga sådana händelser har observerats i denna del av inspelningen.</p>
     {/if}
@@ -207,6 +211,7 @@
       <button type="button" class="milestone-event" onclick={() => jump(event.snapshotId)}>
         <span class="icon">{event.type === 'lead' ? '⇄' : event.type === 'threshold' ? '↕' : event.type === 'start' ? '◷' : '✓'}</span>
         <span class="text">
+          <small class="event-kind">{eventKind(event)}</small>
           <strong>{eventTitle(event)}</strong>
           <small>{clock.format(event.point.capturedAt)} · {number.format(event.point.districts)} distrikt i hela riket · Visa tidpunkten ↗</small>
         </span>
@@ -243,11 +248,13 @@
   .race-controls output { font-family: var(--font-display); font-size: 12px; color: var(--muted); }
   .race-controls button { border: 1px solid var(--line); padding: 8px 12px; background: transparent; color: var(--text); font-family: var(--font-display); font-size: 12px; cursor: pointer; }
   .race-controls button:disabled { opacity: 0.5; cursor: default; }
-  .milestone-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 12px; }
-  .milestone-event { display: flex; align-items: flex-start; gap: 10px; text-align: left; border: 0; background: var(--bg); padding: 12px; cursor: pointer; color: var(--text); font-family: inherit; }
+  .milestone-list { position: relative; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 12px; padding: 8px 0; }
+  .milestone-list::before { content: ''; position: absolute; top: 8px; bottom: 8px; left: 28px; width: 1px; background: var(--line); }
+  .milestone-event { position: relative; display: flex; align-items: flex-start; gap: 10px; text-align: left; border: 0; background: var(--bg); padding: 12px 16px; cursor: pointer; color: var(--text); font-family: inherit; }
   .milestone-event:hover { background: #1a1a1d; }
-  .milestone-event .icon { display: grid; place-items: center; width: 22px; height: 22px; flex-shrink: 0; background: var(--line-soft); font-size: 13px; }
+  .milestone-event .icon { position: relative; z-index: 1; display: grid; place-items: center; width: 25px; height: 25px; flex-shrink: 0; background: var(--red); border: 3px solid var(--bg); font-size: 12px; }
   .milestone-event strong { display: block; font-size: 12px; font-weight: 550; }
   .milestone-event small { display: block; font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .milestone-event .event-kind { margin-top: 0; color: var(--red-bright); font-family: var(--font-display); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
   .more { margin-top: 12px; border: 1px solid var(--line); padding: 9px 13px; background: transparent; color: var(--text); font-family: var(--font-display); font-size: 12px; cursor: pointer; }
 </style>

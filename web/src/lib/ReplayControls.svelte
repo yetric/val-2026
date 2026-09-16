@@ -6,7 +6,7 @@
   const timelineValue = $derived(historyStore.replayMode ? Math.max(0, historyStore.replayIndex) : maxIndex);
 </script>
 
-<div class="replay-controls">
+<div id="replay-controls" class="replay-controls">
   <button type="button" onclick={() => historyStore.play(speed)} disabled={historyStore.entries.length < 2}>
     {historyStore.playing ? 'Ⅱ Pausa' : '▶ Spela upp'}
   </button>
