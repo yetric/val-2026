@@ -57,6 +57,8 @@
 
 <style>
   .party-row { border-bottom: 1px solid var(--line-soft); }
+  .party-row > :first-child { padding-left: 20px; }
+  .party-row > :last-child { padding-right: 20px; }
   th[scope='row'] { text-align: left; font-weight: 500; padding: 12px 8px 12px 0; display: flex; align-items: center; gap: 10px; }
   .party-badge { display: inline-grid; place-items: center; width: 22px; height: 22px; background: var(--party-color); color: #fff; font-family: var(--font-display); font-size: 11px; font-weight: 700; flex-shrink: 0; }
   .party-name { font-size: 13px; color: var(--muted); }

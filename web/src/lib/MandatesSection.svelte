@@ -78,13 +78,12 @@
 </section>
 
 <style>
-  .mandates-section { margin-bottom: 32px; }
   .section-top { margin-bottom: 6px; }
   h2 { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
   .mandate-mode { font-family: var(--font-display); font-size: 12px; letter-spacing: 0.5px; color: var(--muted); margin: 0 0 16px; }
   .empty-state { color: var(--muted); font-size: 12px; }
-  .mandate-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 16px; }
-  .mandate-card { padding: 14px 16px; background: var(--bg); border-top: 3px solid var(--red); }
+  .mandate-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 16px; }
+  .mandate-card { padding: 14px 16px; background: var(--panel); border-top: 3px solid var(--red); }
   .mandate-card.block-right { border-top-color: #2f5fa8; }
   .mandate-card.block-other { border-top-color: var(--muted); }
   .mandate-card span, .mandate-card small { display: block; font-family: var(--font-display); letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); font-size: 11px; }

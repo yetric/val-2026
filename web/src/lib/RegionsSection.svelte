@@ -89,7 +89,7 @@
 </section>
 
 <style>
-  .regions-section { margin-bottom: 32px; }
+  .regions-section { margin-bottom: 44px; }
   .section-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
   h2 { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
   .subtle { font-size: 11px; color: var(--muted); }
@@ -97,8 +97,8 @@
   .region-toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
   input[type='search'], select { font-size: 12px; padding: 7px 9px; border: 1px solid var(--line); background: #000; color: var(--text); }
   .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-  .region-card { text-align: left; border: 0; background: var(--bg); padding: 14px; cursor: pointer; font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 6px; }
-  .region-card:hover { background: #131315; }
+  .region-card { text-align: left; border: 0; background: var(--panel); padding: 14px; cursor: pointer; font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 6px; }
+  .region-card:hover { background: #1e1e22; }
   .region-card.active { box-shadow: inset 0 0 0 1px var(--red-bright); }
   .region-name { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.3px; }
   .region-result { display: flex; align-items: center; gap: 8px; }

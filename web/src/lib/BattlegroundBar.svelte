@@ -48,7 +48,7 @@
 </div>
 
 <style>
-  .battleground { margin-bottom: 32px; }
+  .battleground { margin-bottom: 0; }
   .battleground-label { font-family: var(--font-display); font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
   .empty-state { color: var(--muted); font-size: 13px; }
   .bar { display: flex; width: 100%; height: 56px; position: relative; }

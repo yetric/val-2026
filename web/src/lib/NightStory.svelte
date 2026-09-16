@@ -219,7 +219,8 @@
 </section>
 
 <style>
-  .night-story, .night-race, .night-milestones { border-top: 1px solid var(--line); padding: 24px 0; margin-bottom: 8px; }
+  .night-story, .night-race, .night-milestones { padding: 24px; background: var(--panel); border: 1px solid var(--line); margin-bottom: 32px; }
+  .night-milestones { margin-bottom: 44px; }
   .section-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
   .eyebrow { font-family: var(--font-display); font-size: 12px; font-weight: 650; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
   h2 { font-size: 20px; font-weight: 700; letter-spacing: 0.3px; margin: 4px 0 0; }
@@ -244,7 +245,7 @@
   .race-controls button:disabled { opacity: 0.5; cursor: default; }
   .milestone-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 12px; }
   .milestone-event { display: flex; align-items: flex-start; gap: 10px; text-align: left; border: 0; background: var(--bg); padding: 12px; cursor: pointer; color: var(--text); font-family: inherit; }
-  .milestone-event:hover { background: #131315; }
+  .milestone-event:hover { background: #1a1a1d; }
   .milestone-event .icon { display: grid; place-items: center; width: 22px; height: 22px; flex-shrink: 0; background: var(--line-soft); font-size: 13px; }
   .milestone-event strong { display: block; font-size: 12px; font-weight: 550; }
   .milestone-event small { display: block; font-size: 10px; color: var(--muted); margin-top: 4px; }

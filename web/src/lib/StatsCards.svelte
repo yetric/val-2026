@@ -56,7 +56,7 @@
 
 <style>
   .hero-label, .stat-label { font-family: var(--font-display); font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); }
-  .hero-stat { margin-bottom: 28px; }
+  .hero-stat { margin-bottom: 32px; }
   .hero-number { display: flex; align-items: baseline; gap: 14px; margin-top: 6px; }
   .hero-number span { font-family: var(--font-display); font-weight: 800; font-size: 96px; line-height: 0.95; letter-spacing: -1px; }
   .hero-number small { font-family: var(--font-display); font-weight: 600; font-size: 22px; color: var(--muted); }
@@ -64,8 +64,8 @@
   .progress-fill { height: 100%; background: var(--text); transition: width 0.7s; }
   .hero-note { font-family: var(--font-display); font-size: 13px; color: var(--muted); margin-top: 8px; }
 
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 32px; }
-  .stat { background: var(--bg); padding: 16px 0; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 44px; }
+  .stat { background: var(--panel); padding: 16px 20px; }
   .stat-number { font-family: var(--font-display); font-size: 32px; font-weight: 700; margin-top: 6px; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .stat-note { font-family: var(--font-display); font-size: 12px; color: var(--muted); margin: 6px 0 0; cursor: default; }
 </style>

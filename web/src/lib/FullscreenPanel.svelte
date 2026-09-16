@@ -41,7 +41,7 @@
 </div>
 
 <style>
-  .fullscreen-panel { position: relative; }
+  .fullscreen-panel { position: relative; margin-bottom: 44px; }
   .expand-toggle {
     position: absolute; top: -6px; right: -6px; z-index: 5;
     display: grid; place-items: center; width: 30px; height: 30px;

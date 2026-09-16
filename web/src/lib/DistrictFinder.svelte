@@ -101,7 +101,7 @@
 </section>
 
 <style>
-  .district-finder { margin-bottom: 32px; }
+  .district-finder { margin-bottom: 44px; }
   .section-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
   .eyebrow { font-family: var(--font-display); font-size: 12px; font-weight: 650; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
   h2 { font-size: 20px; font-weight: 700; letter-spacing: 0.3px; margin: 4px 0 0; }
@@ -112,8 +112,8 @@
   .finder-controls input { flex: 1; min-width: 220px; font-size: 12px; padding: 9px 11px; border: 1px solid var(--line); background: #000; color: var(--text); }
   .finder-controls select { font-size: 12px; padding: 9px 11px; border: 1px solid var(--line); background: #000; color: var(--text); }
   .district-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); max-height: 260px; overflow-y: auto; }
-  .district-result { text-align: left; border: 0; background: var(--bg); padding: 10px 12px; cursor: pointer; font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 3px; }
-  .district-result:hover { background: #131315; }
+  .district-result { text-align: left; border: 0; background: var(--panel); padding: 10px 12px; cursor: pointer; font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 3px; }
+  .district-result:hover { background: #1e1e22; }
   .district-result.active { box-shadow: inset 0 0 0 1px var(--red-bright); }
   .district-result strong { font-size: 12px; }
   .district-result span { font-size: 10px; color: var(--muted); }

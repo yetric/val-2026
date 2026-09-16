@@ -148,14 +148,14 @@
 </section>
 
 <style>
-  .trend-section { margin-bottom: 32px; }
+  .trend-section { padding: 24px; background: var(--panel); border: 1px solid var(--line); }
   .section-top { margin-bottom: 6px; }
   .eyebrow { font-family: var(--font-display); font-size: 12px; font-weight: 650; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
   h2 { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; margin: 4px 0 0; }
   .section-description { font-size: 12px; color: var(--muted); margin: 8px 0 16px; }
   .empty-state { padding: 24px; text-align: center; color: var(--muted); font-size: 12px; }
   .subtle { font-size: 11px; color: var(--muted); }
-  .trend-window { margin: 0 0 14px; padding: 10px 12px; border: 1px solid var(--line); }
+  .trend-window { margin: 0 0 14px; padding: 10px 12px; border: 1px solid var(--line); background: var(--bg); }
   .trend-window-heading { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--font-display); font-size: 12px; }
   .trend-window-heading select { font-size: 11px; padding: 4px 6px; border: 1px solid var(--line); background: #000; color: var(--text); }
   .trend-window-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }

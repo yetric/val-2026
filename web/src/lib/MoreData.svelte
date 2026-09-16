@@ -68,7 +68,7 @@
 </section>
 
 <style>
-  .invalid { display: flex; align-items: center; gap: 32px; margin-bottom: 24px; padding: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .invalid { display: flex; align-items: center; gap: 32px; margin-bottom: 44px; padding: 20px 24px; background: var(--panel); border: 1px solid var(--line); flex-wrap: wrap; }
   .invalid > div:first-child { margin-right: auto; }
   .invalid h3 { font-family: var(--font-display); font-size: 14px; margin: 0; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
   .invalid p { font-size: 11px; color: var(--muted); margin: 5px 0 0; }
@@ -76,8 +76,8 @@
   .invalid-stat > span { font-family: var(--font-display); font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); }
   .invalid-stat strong { font-family: var(--font-display); font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .invalid-total { border-left: 1px solid var(--line); padding-left: 24px; }
-  .more-data { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 24px; }
-  .more-data > div { background: var(--bg); padding: 20px; }
+  .more-data { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 44px; }
+  .more-data > div { background: var(--panel); padding: 20px; }
   .more-data h3 { font-family: var(--font-display); font-size: 14px; margin: 0 0 12px; letter-spacing: 0.5px; text-transform: uppercase; }
   .more-data dl { margin: 0; }
   .more-data dl div { display: flex; justify-content: space-between; gap: 14px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: 12px; }

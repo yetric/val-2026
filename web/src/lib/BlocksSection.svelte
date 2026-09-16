@@ -61,7 +61,6 @@
 </section>
 
 <style>
-  .blocks-section { margin-bottom: 32px; }
   .section-top { margin-bottom: 16px; }
   h2 { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
   .vote-margin { display: flex; align-items: baseline; gap: 14px; padding: 12px 18px; margin-bottom: 20px; border-left: 4px solid var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
@@ -69,8 +68,8 @@
   .vote-margin-caption { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.4px; color: var(--muted); }
   .vote-margin-caption strong { color: var(--text); letter-spacing: 1px; }
   .subtle { font-size: 11px; color: var(--muted); }
-  .block-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .block-card { padding: 18px 20px; background: var(--bg); border-top: 3px solid var(--red); }
+  .block-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .block-card { padding: 18px 20px; background: var(--panel); border-top: 3px solid var(--red); }
   .block-card.block-right { border-top-color: #2f5fa8; }
   .block-card-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
   .block-card-heading h3 { font-family: var(--font-display); font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; }

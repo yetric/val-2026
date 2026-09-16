@@ -51,7 +51,7 @@
 </table>
 
 <style>
-  .results-table { width: 100%; border-collapse: collapse; }
+  .results-table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); }
   thead { border-bottom: 1px solid var(--line); }
   thead th { height: 34px; color: var(--muted); font-family: var(--font-display); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; text-align: left; padding: 0 8px; }
   .chart-heading span { font-size: 9px; font-weight: 400; margin-left: 12px; color: var(--muted); text-transform: none; letter-spacing: 0; }

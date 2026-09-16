@@ -92,7 +92,7 @@
 </div>
 
 <style>
-  .filter-panel { padding: 18px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 24px; }
+  .filter-panel { padding: 20px 24px; background: var(--panel); border: 1px solid var(--line); margin-bottom: 44px; }
   .filter-top { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
   .filter-top label { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-display); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
   select, input[type='search'] { font-size: 12px; padding: 8px 10px; border: 1px solid var(--line); background: #000; color: var(--text); }

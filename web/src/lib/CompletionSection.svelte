@@ -55,7 +55,7 @@
 </section>
 
 <style>
-  .completion-section { margin-bottom: 32px; }
+  .completion-section { margin-bottom: 44px; padding: 24px; background: var(--panel); border: 1px solid var(--line); }
   .section-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
   h2 { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
   h3 { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
@@ -64,7 +64,7 @@
   .completion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .completion-list { display: flex; flex-direction: column; gap: 1px; max-height: 220px; overflow-y: auto; }
   .empty-state { font-size: 12px; color: var(--muted); }
-  .completion-row { display: flex; justify-content: space-between; gap: 10px; text-align: left; border: 0; background: var(--line-soft); padding: 8px 10px; font-size: 12px; cursor: pointer; font-family: inherit; color: inherit; }
-  .completion-row:hover { background: var(--line); }
+  .completion-row { display: flex; justify-content: space-between; gap: 10px; text-align: left; border: 0; background: var(--bg); padding: 8px 10px; font-size: 12px; cursor: pointer; font-family: inherit; color: inherit; }
+  .completion-row:hover { background: #000; }
   .completion-row span { color: var(--muted); }
 </style>

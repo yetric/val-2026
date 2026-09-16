@@ -55,7 +55,7 @@
 <style>
   main { max-width: 1320px; margin: auto; padding: 32px 40px 60px; }
   .status { color: var(--muted); font-size: 13px; font-family: var(--font-display); }
-  .scope-banner { font-family: var(--font-display); font-size: 13px; color: var(--text); background: transparent; border-left: 3px solid var(--red); padding: 8px 14px; margin: -12px 0 20px; }
+  .scope-banner { font-family: var(--font-display); font-size: 13px; color: var(--text); background: transparent; border-left: 3px solid var(--red); padding: 8px 14px; margin: -24px 0 44px; }
   .scope-banner button { border: 0; background: none; color: var(--red-bright); text-decoration: underline; cursor: pointer; font: inherit; padding: 0; margin-left: 4px; }
   .ticker-bar { position: sticky; bottom: 0; z-index: 15; }
 </style>

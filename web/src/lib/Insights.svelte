@@ -65,8 +65,8 @@
 </section>
 
 <style>
-  .insights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 32px; }
-  article { background: var(--bg); padding: 18px; }
+  .insights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 44px; }
+  article { background: var(--panel); padding: 18px; }
   article > span { font-family: var(--font-display); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
   strong { display: block; font-family: var(--font-display); font-size: 24px; letter-spacing: -0.3px; margin-top: 8px; font-weight: 700; color: var(--text); }
   p { color: var(--muted); font-size: 11px; line-height: 1.7; margin: 6px 0 0; }
