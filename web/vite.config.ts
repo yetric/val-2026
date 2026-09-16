@@ -1,17 +1,17 @@
 import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vite';
 
-// The legacy app (public/ + server.js) keeps running on :3000 untouched;
-// this dev server proxies API + data calls to it so the new frontend works
-// against real live results without duplicating any backend code.
+// Proxies to the standalone backend in ../server (its own port, its own
+// history archive) — not the legacy public/ + server.js pair, which keeps
+// running independently on :3000 for now.
 export default defineConfig({
   plugins: [svelte({ preprocess: vitePreprocess() })],
   server: {
     port: 5173,
     proxy: {
-      '/api': 'http://localhost:3000',
-      '/geography.json': 'http://localhost:3000',
-      '/districts.json': 'http://localhost:3000',
+      '/api': 'http://localhost:3001',
+      '/geography.json': 'http://localhost:3001',
+      '/districts.json': 'http://localhost:3001',
     },
   },
 });
