@@ -148,25 +148,25 @@
 </section>
 
 <style>
-  .trend-section { background: #fff; border: 1px solid #e5e6df; border-radius: 10px; padding: 22px 24px; margin-bottom: 24px; }
+  .trend-section { margin-bottom: 32px; }
   .section-top { margin-bottom: 6px; }
-  .eyebrow { font-size: 9px; font-weight: 650; letter-spacing: 1.4px; color: #8a8e83; }
-  h2 { font-family: Manrope, sans-serif; font-size: 20px; font-weight: 650; margin: 4px 0 0; }
-  .section-description { font-size: 11px; color: #89937d; margin: 8px 0 16px; }
-  .empty-state { padding: 24px; text-align: center; color: #859275; font-size: 12px; }
-  .subtle { font-size: 10px; color: #8b9085; }
-  .trend-window { margin: 0 0 14px; padding: 10px 12px; border: 1px solid #e5e6df; border-radius: 7px; background: #fbfcf8; }
-  .trend-window-heading { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 11px; }
-  .trend-window-heading select { font-size: 11px; padding: 4px 6px; }
+  .eyebrow { font-family: var(--font-display); font-size: 12px; font-weight: 650; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  h2 { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; margin: 4px 0 0; }
+  .section-description { font-size: 12px; color: var(--muted); margin: 8px 0 16px; }
+  .empty-state { padding: 24px; text-align: center; color: var(--muted); font-size: 12px; }
+  .subtle { font-size: 11px; color: var(--muted); }
+  .trend-window { margin: 0 0 14px; padding: 10px 12px; border: 1px solid var(--line); }
+  .trend-window-heading { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--font-display); font-size: 12px; }
+  .trend-window-heading select { font-size: 11px; padding: 4px 6px; border: 1px solid var(--line); background: #000; color: var(--text); }
   .trend-window-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .trend-window-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 5px; background: #f0f1ea; font-size: 10px; }
-  .trend-window-item.positive { color: #507563; background: #edf4ed; }
-  .trend-window-item.negative { color: #b9665b; background: #fcf0ec; }
+  .trend-window-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; background: var(--line-soft); font-family: var(--font-display); font-size: 11px; }
+  .trend-window-item.positive { color: var(--green-up); }
+  .trend-window-item.negative { color: var(--red-bright); }
   .trend-chart svg { width: 100%; height: auto; display: block; cursor: crosshair; }
-  .trend-chart text { font-size: 10px; fill: #89927e; }
-  .chart-grid { stroke: #ecefe6; stroke-width: 1; }
-  .chart-cursor { stroke: #a7ae9c; stroke-width: 1; stroke-dasharray: 4 4; }
-  .trend-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 10px; font-size: 10px; color: #77826c; }
+  .trend-chart text { font-family: var(--font-display); font-size: 10px; fill: var(--muted); }
+  .chart-grid { stroke: var(--line-soft); stroke-width: 1; }
+  .chart-cursor { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; }
+  .trend-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 10px; font-family: var(--font-display); font-size: 11px; color: var(--muted); }
   .trend-legend span { display: flex; align-items: center; gap: 6px; }
-  .trend-legend i { width: 7px; height: 7px; border-radius: 50%; }
+  .trend-legend i { width: 8px; height: 8px; }
 </style>

@@ -101,27 +101,27 @@
 </section>
 
 <style>
-  .district-finder { background: #fff; border: 1px solid #e5e6df; border-radius: 10px; padding: 22px 24px; margin-bottom: 24px; }
+  .district-finder { margin-bottom: 32px; }
   .section-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
-  .eyebrow { font-size: 9px; font-weight: 650; letter-spacing: 1.4px; color: #8a8e83; }
-  h2 { font-family: Manrope, sans-serif; font-size: 19px; font-weight: 650; margin: 4px 0 0; }
-  .subtle { font-size: 10px; color: #8b9085; }
-  .empty-state { padding: 20px; text-align: center; color: #859275; font-size: 12px; }
-  .error { color: #915332; font-size: 12px; }
+  .eyebrow { font-family: var(--font-display); font-size: 12px; font-weight: 650; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  h2 { font-size: 20px; font-weight: 700; letter-spacing: 0.3px; margin: 4px 0 0; }
+  .subtle { font-size: 11px; color: var(--muted); }
+  .empty-state { padding: 20px; text-align: center; color: var(--muted); font-size: 12px; }
+  .error { color: var(--red-bright); font-size: 12px; }
   .finder-controls { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-  .finder-controls input { flex: 1; min-width: 220px; font-size: 12px; padding: 9px 11px; border: 1px solid #dedfd6; border-radius: 6px; }
-  .finder-controls select { font-size: 12px; padding: 9px 11px; border: 1px solid #dedfd6; border-radius: 6px; }
-  .district-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-height: 260px; overflow-y: auto; }
-  .district-result { text-align: left; border: 1px solid #e5e6df; border-radius: 7px; background: #fafbf7; padding: 10px 12px; cursor: pointer; font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 3px; }
-  .district-result:hover { background: #f1f5e9; }
-  .district-result.active { border-color: #d38a63; background: #fffaf4; }
-  .district-result strong { font-size: 11px; }
-  .district-result span { font-size: 9px; color: #8f9983; }
-  .district-detail { margin-top: 16px; padding-top: 16px; border-top: 1px solid #edeee7; }
-  .district-detail-heading { font-size: 13px; font-weight: 600; }
+  .finder-controls input { flex: 1; min-width: 220px; font-size: 12px; padding: 9px 11px; border: 1px solid var(--line); background: #000; color: var(--text); }
+  .finder-controls select { font-size: 12px; padding: 9px 11px; border: 1px solid var(--line); background: #000; color: var(--text); }
+  .district-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); max-height: 260px; overflow-y: auto; }
+  .district-result { text-align: left; border: 0; background: var(--bg); padding: 10px 12px; cursor: pointer; font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 3px; }
+  .district-result:hover { background: #131315; }
+  .district-result.active { box-shadow: inset 0 0 0 1px var(--red-bright); }
+  .district-result strong { font-size: 12px; }
+  .district-result span { font-size: 10px; color: var(--muted); }
+  .district-detail { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .district-detail-heading { font-family: var(--font-display); font-size: 15px; font-weight: 700; }
   .district-party-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; margin: 10px 0; }
-  .district-party-list > div { display: flex; align-items: baseline; gap: 8px; padding: 6px 0; border-bottom: 1px solid #edf0e8; font-size: 11px; }
-  .district-party-list strong { width: 26px; }
-  .district-party-list small { color: #8b9085; margin-left: auto; text-align: right; }
-  .district-source { font-size: 10px; color: #b0703f; }
+  .district-party-list > div { display: flex; align-items: baseline; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line-soft); font-size: 12px; }
+  .district-party-list strong { font-family: var(--font-display); width: 26px; }
+  .district-party-list small { color: var(--muted); margin-left: auto; text-align: right; }
+  .district-source { font-size: 11px; color: var(--red-bright); }
 </style>

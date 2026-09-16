@@ -1,6 +1,14 @@
 import type { MilestoneEvent, RecentChanges, TrendPoint } from './types.ts';
 
 const mainParties = ['S', 'V', 'MP', 'C', 'M', 'KD', 'SD', 'L'];
+const number = new Intl.NumberFormat('sv-SE');
+
+export function eventTitle(event: MilestoneEvent): string {
+  if (event.type === 'start') return 'Här börjar inspelningen';
+  if (event.type === 'district') return `Minst ${number.format(event.threshold)} distrikt räknade`;
+  if (event.type === 'lead') return `${event.leader} tar ledningen i inspelningen`;
+  return `${event.key} ${event.above ? 'når minst' : 'går under'} 4 % i räkningen`;
+}
 
 export function recentChanges(before: TrendPoint | null | undefined, after: TrendPoint | null | undefined): RecentChanges | null {
   if (!before || !after || before.shares == null || after.shares == null) return null;

@@ -92,16 +92,17 @@
 </div>
 
 <style>
-  .filter-panel { padding: 18px 20px; background: #fff; border: 1px solid #e5e6df; border-radius: 10px; margin-bottom: 20px; }
+  .filter-panel { padding: 18px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 24px; }
   .filter-top { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
-  .filter-top label { display: flex; flex-direction: column; gap: 6px; font-size: 9px; letter-spacing: 0.8px; color: #7f8775; }
-  select, input[type='search'] { font-size: 12px; padding: 8px 10px; border: 1px solid #dedfd6; border-radius: 6px; background: #fff; color: #444; }
+  .filter-top label { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-display); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+  select, input[type='search'] { font-size: 12px; padding: 8px 10px; border: 1px solid var(--line); background: #000; color: var(--text); }
   .check-label { flex-direction: row !important; align-items: center; gap: 6px !important; }
   .area-field select { min-width: 180px; }
   .filter-actions { display: flex; gap: 8px; margin-left: auto; }
   button[type='button']:disabled { opacity: 0.5; cursor: default; }
-  button[type='button'] { border: 1px solid #dedfd6; background: #fafbf7; padding: 8px 12px; border-radius: 6px; color: #59634e; font-size: 11px; cursor: pointer; }
-  .party-filter-line { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 16px; }
-  .party-chip { min-width: 38px; padding: 7px 9px; border: 1px solid color-mix(in srgb, var(--party-color) 20%, white); border-radius: 6px; background: color-mix(in srgb, var(--party-color) 6%, white); color: var(--party-color); font-weight: 650; font-size: 11px; cursor: pointer; }
-  .party-chip.selected { color: white; background: var(--party-color); box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--party-color); }
+  button[type='button'] { border: 1px solid var(--line); background: transparent; padding: 8px 12px; color: var(--text); font-family: var(--font-display); font-size: 12px; letter-spacing: 0.5px; cursor: pointer; }
+  button[type='button']:hover:not(:disabled) { border-color: var(--muted); }
+  .party-filter-line { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 16px; }
+  .party-chip { min-width: 34px; padding: 6px 9px; border: 1px solid var(--party-color); background: transparent; color: var(--party-color); font-family: var(--font-display); font-weight: 700; font-size: 12px; cursor: pointer; }
+  .party-chip.selected { color: #fff; background: var(--party-color); }
 </style>

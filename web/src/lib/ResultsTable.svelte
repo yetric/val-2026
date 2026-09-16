@@ -51,11 +51,11 @@
 </table>
 
 <style>
-  .results-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e5e6df; border-radius: 9px; overflow: hidden; }
-  thead { background: #f0f1eb; }
-  thead th { height: 38px; color: #82887b; font-size: 9px; letter-spacing: 0.7px; font-weight: 600; text-align: left; padding: 0 8px; }
-  .chart-heading span { font-size: 8px; font-weight: 400; margin-left: 12px; color: #a1a699; }
+  .results-table { width: 100%; border-collapse: collapse; }
+  thead { border-bottom: 1px solid var(--line); }
+  thead th { height: 34px; color: var(--muted); font-family: var(--font-display); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; text-align: left; padding: 0 8px; }
+  .chart-heading span { font-size: 9px; font-weight: 400; margin-left: 12px; color: var(--muted); text-transform: none; letter-spacing: 0; }
   .numeric { text-align: right; }
-  .loading { text-align: center; padding: 30px; color: #8b917e; font-size: 12px; }
+  .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 12px; }
   tbody { font-size: 12px; }
 </style>

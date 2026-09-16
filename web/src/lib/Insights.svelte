@@ -65,9 +65,9 @@
 </section>
 
 <style>
-  .insights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
-  article { border: 1px solid #e5e6df; border-radius: 8px; background: #fff; padding: 18px; }
-  article > span { font-size: 8px; color: #869079; letter-spacing: 1px; }
-  strong { display: block; font-family: Manrope, sans-serif; font-size: 22px; letter-spacing: -0.5px; margin-top: 8px; font-weight: 650; }
-  p { color: #929a86; font-size: 10px; line-height: 1.7; margin: 6px 0 0; }
+  .insights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 32px; }
+  article { background: var(--bg); padding: 18px; }
+  article > span { font-family: var(--font-display); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+  strong { display: block; font-family: var(--font-display); font-size: 24px; letter-spacing: -0.3px; margin-top: 8px; font-weight: 700; color: var(--text); }
+  p { color: var(--muted); font-size: 11px; line-height: 1.7; margin: 6px 0 0; }
 </style>

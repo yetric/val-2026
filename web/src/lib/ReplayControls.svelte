@@ -29,11 +29,11 @@
 {/if}
 
 <style>
-  .replay-controls { display: flex; align-items: center; gap: 10px; margin: 16px 0; }
-  button { border: 1px solid #d7dccd; background: #fff; border-radius: 6px; color: #59654b; font-size: 11px; padding: 8px 11px; cursor: pointer; }
+  .replay-controls { display: flex; align-items: center; gap: 10px; margin: 20px 0; }
+  button { border: 1px solid var(--line); background: transparent; color: var(--text); font-family: var(--font-display); font-size: 12px; letter-spacing: 0.5px; padding: 8px 11px; cursor: pointer; }
   button:disabled { opacity: 0.4; cursor: default; }
-  .go-live.active { background: #e1eada; border-color: #cedcc4; color: #4e7043; }
-  input[type='range'] { flex: 1; min-width: 60px; accent-color: #eb7148; cursor: pointer; }
-  .replay-note { font-size: 11px; color: #b07746; margin: 0 0 12px; }
-  .replay-error { font-size: 11px; color: #915332; margin: 0 0 12px; }
+  .go-live.active { background: var(--red); border-color: var(--red); color: #fff; }
+  input[type='range'] { flex: 1; min-width: 60px; accent-color: var(--red-bright); cursor: pointer; }
+  .replay-note { font-family: var(--font-display); font-size: 12px; color: var(--red-bright); margin: 0 0 12px; }
+  .replay-error { font-size: 11px; color: var(--red-bright); margin: 0 0 12px; }
 </style>

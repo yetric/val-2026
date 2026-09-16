@@ -70,7 +70,7 @@
         <span class="region-name">{region.namn}</span>
         {#if party}
           <span class="region-result">
-            <span class="mini-badge" style="--party-color: {colors[partyKey(party)] || '#92958c'}">{partyKey(party)}</span>
+            <span class="mini-badge" style="background: {colors[partyKey(party)] || '#92958c'}">{partyKey(party)}</span>
             <strong use:flash={{ value: pct(party.andelRoster), version: region }}>{pct(party.andelRoster)}</strong>
             <span class="change {(party.forandringAndelRoster || 0) >= 0 ? 'positive' : 'negative'}">{deltaText(party.forandringAndelRoster)} pp</span>
           </span>
@@ -89,25 +89,25 @@
 </section>
 
 <style>
-  .regions-section { background: #fff; border: 1px solid #e5e6df; border-radius: 10px; padding: 22px 24px; margin-bottom: 24px; }
+  .regions-section { margin-bottom: 32px; }
   .section-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
-  h2 { font-family: Manrope, sans-serif; font-size: 20px; font-weight: 650; margin: 0; }
-  .subtle { font-size: 10px; color: #8b9085; }
-  .empty-state { grid-column: 1 / -1; text-align: center; padding: 24px; color: #859275; font-size: 12px; }
+  h2 { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
+  .subtle { font-size: 11px; color: var(--muted); }
+  .empty-state { grid-column: 1 / -1; text-align: center; padding: 24px; color: var(--muted); font-size: 12px; }
   .region-toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-  input[type='search'], select { font-size: 12px; padding: 7px 9px; border: 1px solid #dedfd6; border-radius: 6px; }
-  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .region-card { text-align: left; border: 1px solid #e5e6df; border-radius: 8px; background: #fff; padding: 14px; cursor: pointer; font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 6px; }
-  .region-card:hover { border-color: #b7c4a2; background: #fcfdf9; }
-  .region-card.active { border-color: #d38a63; background: #fffaf4; }
-  .region-name { font-size: 11px; font-weight: 550; }
+  input[type='search'], select { font-size: 12px; padding: 7px 9px; border: 1px solid var(--line); background: #000; color: var(--text); }
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .region-card { text-align: left; border: 0; background: var(--bg); padding: 14px; cursor: pointer; font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 6px; }
+  .region-card:hover { background: #131315; }
+  .region-card.active { box-shadow: inset 0 0 0 1px var(--red-bright); }
+  .region-name { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.3px; }
   .region-result { display: flex; align-items: center; gap: 8px; }
-  .region-result strong { font-size: 17px; }
-  .mini-badge { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 4px; background: color-mix(in srgb, var(--party-color) 15%, white); color: var(--party-color); font-size: 8px; font-weight: 700; }
-  .change { font-size: 9px; padding: 3px 5px; border-radius: 4px; }
-  .change.positive { color: #507563; background: #edf4ed; }
-  .change.negative { color: #b9665b; background: #fcf0ec; }
-  .region-caption { font-size: 9px; color: #8f9983; }
-  .region-progress { display: block; height: 4px; background: #edf0e8; border-radius: 3px; overflow: hidden; }
-  .region-progress i { display: block; height: 100%; background: #829873; }
+  .region-result strong { font-family: var(--font-display); font-size: 19px; font-weight: 700; }
+  .mini-badge { display: inline-grid; place-items: center; width: 16px; height: 16px; color: #fff; font-family: var(--font-display); font-size: 9px; font-weight: 700; }
+  .change { font-family: var(--font-display); font-size: 11px; font-weight: 600; }
+  .change.positive { color: var(--green-up); }
+  .change.negative { color: var(--red-bright); }
+  .region-caption { font-size: 10px; color: var(--muted); }
+  .region-progress { display: block; height: 3px; background: var(--line-soft); overflow: hidden; }
+  .region-progress i { display: block; height: 100%; background: var(--text); }
 </style>

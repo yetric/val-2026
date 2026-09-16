@@ -2,10 +2,11 @@
   import { currentView } from './currentView.svelte.ts';
   import { filters } from './filters.svelte.ts';
   import { allocateSeats, mandateMargins, seatUncertainty, colors } from './model.ts';
-  import { flash } from './flash.ts';
+  import { tween } from './tween.ts';
 
   const decimal = new Intl.NumberFormat('sv-SE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const pct = (value: number | null) => (value == null ? '—' : `${decimal.format(value)} %`);
+  const formatSeats = (value: number | null) => (value == null ? '—' : String(Math.round(value)));
 
   const seatsTotal = $derived(filters.area ? 29 : 349);
   const estimate = $derived(allocateSeats(currentView.area, seatsTotal));
@@ -38,17 +39,17 @@
     <div class="mandate-summary">
       <article class="mandate-card block-left">
         <span>Vänster</span>
-        <strong use:flash={{ value: String(leftSeats), version: currentView.data }}>{leftSeats}</strong>
+        <strong use:tween={{ value: leftSeats, format: formatSeats, version: currentView.data }}></strong>
         <small>av {estimate.seats} platser</small>
       </article>
       <article class="mandate-card block-right">
         <span>Höger</span>
-        <strong use:flash={{ value: String(rightSeats), version: currentView.data }}>{rightSeats}</strong>
+        <strong use:tween={{ value: rightSeats, format: formatSeats, version: currentView.data }}></strong>
         <small>av {estimate.seats} platser</small>
       </article>
       <article class="mandate-card block-other">
         <span>Övriga / under 4 %</span>
-        <strong use:flash={{ value: String(otherSeats), version: currentView.data }}>{otherSeats}</strong>
+        <strong use:tween={{ value: otherSeats, format: formatSeats, version: currentView.data }}></strong>
         <small>av {estimate.seats} platser</small>
       </article>
     </div>
@@ -65,7 +66,7 @@
         <div class="mandate-party">
           <span class="name">{p.key} {p.name}</span>
           <span class="share">{pct(p.share)} · {r.low}–{r.high}</span>
-          <strong use:flash={{ value: String(p.seats), version: currentView.data }}>{p.seats}</strong>
+          <strong use:tween={{ value: p.seats, format: formatSeats, version: currentView.data }}></strong>
           <div class="seat-track">
             <i class="band" style="left: {(r.low / estimate.seats) * 100}%; width: {Math.max(0, ((r.high - r.low) / estimate.seats) * 100)}%; background: {colors[p.key] || '#92958c'}"></i>
             <b class="marker" style="left: {(p.seats / estimate.seats) * 100}%; border-color: {colors[p.key] || '#92958c'}"></b>
@@ -77,24 +78,24 @@
 </section>
 
 <style>
-  .mandates-section { background: #fff; border: 1px solid #e5e6df; border-radius: 10px; padding: 22px 24px; margin-bottom: 24px; }
+  .mandates-section { margin-bottom: 32px; }
   .section-top { margin-bottom: 6px; }
-  h2 { font-family: Manrope, sans-serif; font-size: 20px; font-weight: 650; margin: 0; }
-  .mandate-mode { font-size: 10px; color: #879379; margin: 0 0 16px; }
-  .empty-state { color: #859275; font-size: 12px; }
-  .mandate-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 14px; }
-  .mandate-card { padding: 14px 16px; border-radius: 7px; background: #f4f6ef; border-top: 3px solid #829873; }
-  .mandate-card.block-right { border-top-color: #6595b8; background: #f2f6f9; }
-  .mandate-card.block-other { border-top-color: #b5b8aa; background: #f7f7f3; }
-  .mandate-card span, .mandate-card small { display: block; color: #849076; font-size: 10px; }
-  .mandate-card strong { display: block; font: 650 26px Manrope, sans-serif; margin: 5px 0 2px; }
-  .mandate-margins { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 16px; padding: 9px 11px; border: 1px solid #e4e8dd; border-radius: 6px; background: #fafbf7; color: #68735f; font-size: 10px; }
-  .mandate-margins .title { font-weight: 700; color: #4f5e47; text-transform: uppercase; letter-spacing: 0.04em; }
+  h2 { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
+  .mandate-mode { font-family: var(--font-display); font-size: 12px; letter-spacing: 0.5px; color: var(--muted); margin: 0 0 16px; }
+  .empty-state { color: var(--muted); font-size: 12px; }
+  .mandate-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+  .mandate-card { padding: 14px 16px; background: var(--bg); border-top: 3px solid var(--red); }
+  .mandate-card.block-right { border-top-color: #2f5fa8; }
+  .mandate-card.block-other { border-top-color: var(--muted); }
+  .mandate-card span, .mandate-card small { display: block; font-family: var(--font-display); letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); font-size: 11px; }
+  .mandate-card strong { display: block; font-family: var(--font-display); font-weight: 700; font-size: 30px; margin: 5px 0 2px; }
+  .mandate-margins { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 16px; padding: 10px 12px; border: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+  .mandate-margins .title { font-family: var(--font-display); font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 1px; }
   .mandate-party-list { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
-  .mandate-party { position: relative; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid #edf0e8; font-size: 11px; }
-  .mandate-party .share { color: #89937e; }
-  .mandate-party strong { font-size: 14px; width: 22px; text-align: right; }
-  .seat-track { grid-column: 1 / -1; position: relative; height: 5px; background: #edf0e8; border-radius: 3px; }
-  .band { position: absolute; top: 0; bottom: 0; border-radius: 3px; opacity: 0.35; }
-  .marker { position: absolute; top: -2px; width: 2px; height: 9px; border-left: 2px solid; }
+  .mandate-party { position: relative; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: 12px; }
+  .mandate-party .share { color: var(--muted); }
+  .mandate-party strong { font-family: var(--font-display); font-size: 16px; width: 22px; text-align: right; }
+  .seat-track { grid-column: 1 / -1; position: relative; height: 4px; background: var(--line-soft); }
+  .band { position: absolute; top: 0; bottom: 0; opacity: 0.4; }
+  .marker { position: absolute; top: -2px; width: 2px; height: 8px; border-left: 2px solid; }
 </style>

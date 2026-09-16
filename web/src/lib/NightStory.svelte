@@ -2,7 +2,7 @@
   import { trends } from './trends.svelte.ts';
   import { historyStore } from './historyStore.svelte.ts';
   import { filters } from './filters.svelte.ts';
-  import { recentChanges, milestones } from './story.ts';
+  import { recentChanges, milestones, eventTitle } from './story.ts';
   import { names } from './model.ts';
   import type { MilestoneEvent, TrendPoint } from './types.ts';
 
@@ -106,12 +106,6 @@
   const milestoneEvents = $derived(milestones(availablePoints, { regional: Boolean(filters.area) }).filter(event => milestoneFilter === 'all' || event.type === milestoneFilter).reverse());
   const visibleMilestones = $derived(milestoneEvents.slice(0, eventLimit));
 
-  function eventTitle(event: MilestoneEvent): string {
-    if (event.type === 'start') return 'Här börjar inspelningen';
-    if (event.type === 'district') return `Minst ${number.format(event.threshold)} distrikt räknade`;
-    if (event.type === 'lead') return `${event.leader} tar ledningen i inspelningen`;
-    return `${event.key} ${event.above ? 'når minst' : 'går under'} 4 % i räkningen`;
-  }
   function jump(id: string) {
     const index = historyStore.entries.findIndex(entry => entry.id === id);
     if (index >= 0) { historyStore.stop(); historyStore.showSnapshot(index); }
@@ -161,23 +155,23 @@
   {:else}
     <div class="race-chart">
       <svg viewBox="0 0 {RW} {RH}" role="img" aria-label="Blockens försprång i {title(filters.area)}. Positivt betyder större vänsterblock. Negativt betyder större högerblock.">
-        <rect x={rLeft} y={rTop} width={RW - rLeft - rRight} height={raceZeroY - rTop} fill="#fcf0ed" />
-        <rect x={rLeft} y={raceZeroY} width={RW - rLeft - rRight} height={RH - rBottom - raceZeroY} fill="#eff5fa" />
+        <rect x={rLeft} y={rTop} width={RW - rLeft - rRight} height={raceZeroY - rTop} fill="rgba(187,25,25,0.1)" />
+        <rect x={rLeft} y={raceZeroY} width={RW - rLeft - rRight} height={RH - rBottom - raceZeroY} fill="rgba(47,95,168,0.12)" />
         {#each raceTicks as gap}
           <line x1={rLeft} x2={RW - rRight} y1={raceY(gap)} y2={raceY(gap)} class={Math.abs(gap) < 1e-8 ? 'race-zero' : 'chart-grid'} />
           <text x={rLeft - 8} y={raceY(gap) + 4} text-anchor="end">{signed(gap)}</text>
         {/each}
-        <path d={racePath} fill="none" stroke="#647753" stroke-width="2.5" stroke-linejoin="round" />
+        <path d={racePath} fill="none" stroke="#f5f5f2" stroke-width="2.5" stroke-linejoin="round" />
         {#if raceFirst}<text x={raceX(raceFirst.capturedAt)} y={RH - 8} text-anchor={racePoints.length === 1 ? 'middle' : 'start'}>{clock.format(raceFirst.capturedAt)}</text>{/if}
         {#if raceLast && racePoints.length > 1}<text x={raceX(raceLast.capturedAt)} y={RH - 8} text-anchor="end">{clock.format(raceLast.capturedAt)}</text>{/if}
         {#each leadEvents as event (event.id)}
-          <circle cx={raceX(event.point.capturedAt)} cy={raceY(event.point.blockGap ?? 0)} r="4" fill="#ec7146"><title>{clock.format(event.point.capturedAt)}: {event.leader} tar ledningen i inspelningen</title></circle>
+          <circle cx={raceX(event.point.capturedAt)} cy={raceY(event.point.blockGap ?? 0)} r="4" fill="#ff5c5c"><title>{clock.format(event.point.capturedAt)}: {event.leader} tar ledningen i inspelningen</title></circle>
         {/each}
         {#if historyStore.replayMode && raceCurrentPoint}
           <line x1={raceX(raceCurrentPoint.capturedAt)} x2={raceX(raceCurrentPoint.capturedAt)} y1={rTop} y2={RH - rBottom} class="race-replay" />
         {/if}
         {#if raceSelectedPoint}
-          <circle cx={raceX(raceSelectedPoint.capturedAt)} cy={raceY(raceSelectedPoint.blockGap)} r="5" fill="#647753" stroke="white" stroke-width="2" />
+          <circle cx={raceX(raceSelectedPoint.capturedAt)} cy={raceY(raceSelectedPoint.blockGap)} r="5" fill="#ff5c5c" stroke="#0b0b0d" stroke-width="2" />
         {/if}
       </svg>
     </div>
@@ -225,34 +219,34 @@
 </section>
 
 <style>
-  .night-story, .night-race, .night-milestones { background: #fff; border: 1px solid #e5e6df; border-radius: 10px; padding: 22px 24px; margin-bottom: 24px; }
-  .night-story { background: #f0f2e9; }
+  .night-story, .night-race, .night-milestones { border-top: 1px solid var(--line); padding: 24px 0; margin-bottom: 8px; }
   .section-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
-  .eyebrow { font-size: 9px; font-weight: 650; letter-spacing: 1.4px; color: #8a8e83; }
-  h2 { font-family: Manrope, sans-serif; font-size: 19px; font-weight: 650; margin: 4px 0 0; }
-  .sort-label { display: flex; align-items: center; gap: 8px; font-size: 10px; color: #7c8571; }
-  .subtle { font-size: 10px; color: #8b9085; }
-  .empty-state { padding: 20px; text-align: center; color: #859275; font-size: 12px; }
-  .changes-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0 10px; }
-  .change-card { background: #fff; border: 1px solid #e3e8d8; padding: 14px; border-radius: 7px; }
-  .change-card span { display: block; color: #839074; font-size: 9px; }
-  .change-card strong { display: block; font: 650 22px Manrope, sans-serif; margin-top: 8px; }
-  .change-card p { font-size: 10px; color: #8c987e; margin: 6px 0 0; }
+  .eyebrow { font-family: var(--font-display); font-size: 12px; font-weight: 650; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  h2 { font-size: 20px; font-weight: 700; letter-spacing: 0.3px; margin: 4px 0 0; }
+  .sort-label { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 12px; color: var(--muted); }
+  .sort-label select { border: 1px solid var(--line); background: #000; color: var(--text); padding: 5px 7px; }
+  .subtle { font-size: 11px; color: var(--muted); }
+  .empty-state { padding: 20px; text-align: center; color: var(--muted); font-size: 12px; }
+  .changes-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 14px 0 10px; }
+  .change-card { background: var(--bg); padding: 14px; }
+  .change-card span { display: block; font-family: var(--font-display); letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); font-size: 10px; }
+  .change-card strong { display: block; font-family: var(--font-display); font-weight: 700; font-size: 24px; margin-top: 8px; }
+  .change-card p { font-size: 11px; color: var(--muted); margin: 6px 0 0; }
   .race-chart svg { width: 100%; height: auto; display: block; cursor: crosshair; }
-  .race-chart text { font-size: 10px; fill: #7f8c73; }
-  .chart-grid { stroke: #ecefe6; stroke-width: 1; }
-  .race-zero { stroke: #a7b399; stroke-dasharray: 5 4; }
-  .race-replay { stroke: #87937b; stroke-dasharray: 2 3; }
+  .race-chart text { font-family: var(--font-display); font-size: 10px; fill: var(--muted); }
+  .chart-grid { stroke: var(--line-soft); stroke-width: 1; }
+  .race-zero { stroke: var(--muted); stroke-dasharray: 5 4; }
+  .race-replay { stroke: var(--red-bright); stroke-dasharray: 2 3; }
   .race-controls { display: flex; align-items: center; gap: 14px; margin: 12px 0; flex-wrap: wrap; }
-  .race-controls input { flex: 1; min-width: 90px; accent-color: #859873; }
-  .race-controls output { font-size: 11px; color: #61724e; }
-  .race-controls button { border: 1px solid #dbe1d0; padding: 8px 12px; border-radius: 6px; background: #fafbf7; color: #657551; font-size: 11px; cursor: pointer; }
+  .race-controls input { flex: 1; min-width: 90px; accent-color: var(--red-bright); }
+  .race-controls output { font-family: var(--font-display); font-size: 12px; color: var(--muted); }
+  .race-controls button { border: 1px solid var(--line); padding: 8px 12px; background: transparent; color: var(--text); font-family: var(--font-display); font-size: 12px; cursor: pointer; }
   .race-controls button:disabled { opacity: 0.5; cursor: default; }
-  .milestone-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-  .milestone-event { display: flex; align-items: flex-start; gap: 10px; text-align: left; border: 1px solid #e5e9df; background: #fafbf7; border-radius: 7px; padding: 12px; cursor: pointer; color: #536147; font-family: inherit; }
-  .milestone-event:hover { background: #f1f5e9; border-color: #c5d1b5; }
-  .milestone-event .icon { display: grid; place-items: center; width: 24px; height: 24px; flex-shrink: 0; background: #e9edde; border-radius: 6px; font-size: 13px; }
-  .milestone-event strong { display: block; font-size: 11px; font-weight: 550; }
-  .milestone-event small { display: block; font-size: 9px; color: #8e9982; margin-top: 4px; }
-  .more { margin-top: 12px; border: 1px solid #dbe1d0; padding: 9px 13px; border-radius: 6px; background: #fafbf7; color: #657551; font-size: 11px; cursor: pointer; }
+  .milestone-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 12px; }
+  .milestone-event { display: flex; align-items: flex-start; gap: 10px; text-align: left; border: 0; background: var(--bg); padding: 12px; cursor: pointer; color: var(--text); font-family: inherit; }
+  .milestone-event:hover { background: #131315; }
+  .milestone-event .icon { display: grid; place-items: center; width: 22px; height: 22px; flex-shrink: 0; background: var(--line-soft); font-size: 13px; }
+  .milestone-event strong { display: block; font-size: 12px; font-weight: 550; }
+  .milestone-event small { display: block; font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .more { margin-top: 12px; border: 1px solid var(--line); padding: 9px 13px; background: transparent; color: var(--text); font-family: var(--font-display); font-size: 12px; cursor: pointer; }
 </style>

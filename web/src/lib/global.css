@@ -1,13 +1,29 @@
-:root { font-family: 'DM Sans', system-ui, sans-serif; color: #292c28; background: #f7f7f2; --muted: #777b73; --line: #e5e6df; --orange: #ec7146; }
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap');
+
+:root {
+  color-scheme: dark;
+  --bg: #0b0b0d;
+  --text: #f5f5f2;
+  --muted: #9a9a9e;
+  --line: rgba(255, 255, 255, 0.14);
+  --line-soft: rgba(255, 255, 255, 0.08);
+  --red: #bb1919;
+  --red-bright: #ff5c5c;
+  --green-up: #6bd08a;
+  --font-display: 'Barlow Semi Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+}
+
 * { box-sizing: border-box; }
-body { margin: 0; }
-button, select, input { font: inherit; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-body); }
+button, select, input { font: inherit; color: inherit; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; }
 
 @keyframes value-flash {
-  0%, 55% { background-color: #fbdcc5; box-shadow: 0 0 0 3px #fbdcc5; }
-  100% { background-color: transparent; box-shadow: 0 0 0 0 transparent; }
+  0%, 55% { background-color: rgba(187, 25, 25, 0.45); }
+  100% { background-color: transparent; }
 }
-.value-flash { animation: value-flash 1.7s ease-out; border-radius: 3px; }
+.value-flash { animation: value-flash 1.7s ease-out; }
 @media (prefers-reduced-motion: reduce) {
   .value-flash { animation: none; }
 }

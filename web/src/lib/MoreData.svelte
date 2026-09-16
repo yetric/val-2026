@@ -68,21 +68,21 @@
 </section>
 
 <style>
-  .invalid { display: flex; align-items: center; gap: 32px; margin-bottom: 24px; padding: 22px 24px; border: 1px solid #e5e6df; border-radius: 10px; background: #f0f1ea; flex-wrap: wrap; }
+  .invalid { display: flex; align-items: center; gap: 32px; margin-bottom: 24px; padding: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
   .invalid > div:first-child { margin-right: auto; }
-  .invalid h3 { font-size: 13px; margin: 0; font-weight: 600; }
-  .invalid p { font-size: 10px; color: #929787; margin: 5px 0 0; }
+  .invalid h3 { font-family: var(--font-display); font-size: 14px; margin: 0; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .invalid p { font-size: 11px; color: var(--muted); margin: 5px 0 0; }
   .invalid-stat { display: flex; flex-direction: column; gap: 6px; }
-  .invalid-stat > span { font-size: 10px; color: #848b7c; }
-  .invalid-stat strong { font-size: 15px; font-weight: 550; font-variant-numeric: tabular-nums; }
-  .invalid-total { border-left: 1px solid #dddfd3; padding-left: 24px; }
-  .more-data { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 24px; }
-  .more-data > div { border: 1px solid #e5e6df; border-radius: 8px; padding: 20px; background: #fafbf6; }
-  .more-data h3 { font-size: 13px; margin: 0 0 12px; }
+  .invalid-stat > span { font-family: var(--font-display); font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); }
+  .invalid-stat strong { font-family: var(--font-display); font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .invalid-total { border-left: 1px solid var(--line); padding-left: 24px; }
+  .more-data { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 24px; }
+  .more-data > div { background: var(--bg); padding: 20px; }
+  .more-data h3 { font-family: var(--font-display); font-size: 14px; margin: 0 0 12px; letter-spacing: 0.5px; text-transform: uppercase; }
   .more-data dl { margin: 0; }
-  .more-data dl div { display: flex; justify-content: space-between; gap: 14px; padding: 8px 0; border-bottom: 1px solid #e5e6df; font-size: 11px; }
+  .more-data dl div { display: flex; justify-content: space-between; gap: 14px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: 12px; }
   .more-data dl div:last-child { border: 0; }
-  .more-data dt { color: #89947a; }
+  .more-data dt { color: var(--muted); }
   .more-data dd { margin: 0; text-align: right; }
-  .more-data p { font-size: 11px; line-height: 1.7; color: #859175; margin: 0 0 8px; }
+  .more-data p { font-size: 12px; line-height: 1.7; color: var(--muted); margin: 0 0 8px; }
 </style>

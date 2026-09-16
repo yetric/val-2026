@@ -55,16 +55,16 @@
 </section>
 
 <style>
-  .completion-section { background: #fff; border: 1px solid #e5e6df; border-radius: 10px; padding: 22px 24px; margin-bottom: 24px; }
+  .completion-section { margin-bottom: 32px; }
   .section-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-  h2 { font-family: Manrope, sans-serif; font-size: 20px; font-weight: 650; margin: 0; }
-  h3 { font-size: 12px; margin: 0 0 8px; }
-  .subtle { font-size: 10px; color: #8b9085; }
-  .section-description { font-size: 11px; color: #89937d; margin: 8px 0 16px; }
+  h2 { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
+  h3 { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .subtle { font-size: 11px; color: var(--muted); }
+  .section-description { font-size: 12px; color: var(--muted); margin: 8px 0 16px; }
   .completion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .completion-list { display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto; }
-  .empty-state { font-size: 11px; color: #859275; }
-  .completion-row { display: flex; justify-content: space-between; gap: 10px; text-align: left; border: 0; background: #fafbf7; border-radius: 6px; padding: 8px 10px; font-size: 11px; cursor: pointer; font-family: inherit; color: inherit; }
-  .completion-row:hover { background: #f1f5e9; }
-  .completion-row span { color: #8b9085; }
+  .completion-list { display: flex; flex-direction: column; gap: 1px; max-height: 220px; overflow-y: auto; }
+  .empty-state { font-size: 12px; color: var(--muted); }
+  .completion-row { display: flex; justify-content: space-between; gap: 10px; text-align: left; border: 0; background: var(--line-soft); padding: 8px 10px; font-size: 12px; cursor: pointer; font-family: inherit; color: inherit; }
+  .completion-row:hover { background: var(--line); }
+  .completion-row span { color: var(--muted); }
 </style>

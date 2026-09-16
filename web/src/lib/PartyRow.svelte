@@ -1,6 +1,7 @@
 <script lang="ts">
   import { partyKey, partyName, colors } from './model.ts';
   import { flash } from './flash.ts';
+  import { tween } from './tween.ts';
   import type { Comparison, Party } from './types.ts';
 
   interface Props {
@@ -22,11 +23,9 @@
 
   const key = $derived(partyKey(party));
   const color = $derived(colors[key] || '#92958c');
-  const shareText = $derived(pct(party.andelRoster));
   const delta = $derived(baseline.delta);
   const changeText = $derived(`${delta != null && delta > 0 ? '↗ ' : delta != null && delta < 0 ? '↘ ' : ''}${deltaText(delta)}`);
   const changeClass = $derived(delta != null && delta > 0 ? 'positive' : delta != null && delta < 0 ? 'negative' : 'neutral');
-  const votesText = $derived(fmt(party.antalRoster));
   const exactShare = $derived(validVotes != null && validVotes > 0 && Number.isFinite(party.antalRoster) ? (party.antalRoster / validVotes) * 100 : null);
 </script>
 
@@ -42,12 +41,12 @@
       <span class="threshold" style="left: {(4 / max) * 100}%"></span>
     </div>
   </td>
-  <td class="numeric share" use:flash={{ value: shareText, version }}>{shareText}</td>
+  <td class="numeric share" use:tween={{ value: party.andelRoster, format: pct, version }}></td>
   <td class="numeric">
     <span class="change {changeClass}" use:flash={{ value: changeText, version }}>{changeText}</span>
   </td>
   <td class="numeric vote-column">
-    <span use:flash={{ value: votesText, version }}>{votesText}</span>
+    <span use:tween={{ value: party.antalRoster, format: fmt, version }}></span>
     {#if exactShare != null}<small class="exact-share">{exactDecimal.format(exactShare)} %</small>{/if}
   </td>
   {#if detailsExpanded}
@@ -57,23 +56,23 @@
 </tr>
 
 <style>
-  .party-row { border-bottom: 1px solid #eeefe9; }
+  .party-row { border-bottom: 1px solid var(--line-soft); }
   th[scope='row'] { text-align: left; font-weight: 500; padding: 12px 8px 12px 0; display: flex; align-items: center; gap: 10px; }
-  .party-badge { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 7px; background: color-mix(in srgb, var(--party-color) 12%, white); color: var(--party-color); font-size: 10px; font-weight: 700; flex-shrink: 0; }
-  .party-name { font-size: 12px; }
+  .party-badge { display: inline-grid; place-items: center; width: 22px; height: 22px; background: var(--party-color); color: #fff; font-family: var(--font-display); font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .party-name { font-size: 13px; color: var(--muted); }
   .bar-cell { padding-right: 20px; width: 30%; }
-  .bar-track { height: 20px; position: relative; background: #f2f3ee; border-radius: 3px; overflow: visible; }
-  .bar-previous, .bar-current { position: absolute; left: 0; border-radius: 0 3px 3px 0; transition: width 0.7s ease; }
-  .bar-previous { height: 7px; bottom: 0; background: #daddd4; }
-  .bar-current { height: 10px; top: 1px; }
-  .threshold { position: absolute; top: -3px; bottom: -3px; border-left: 1px dashed #bcc0b2; }
+  .bar-track { height: 16px; position: relative; background: var(--line-soft); overflow: visible; }
+  .bar-previous, .bar-current { position: absolute; left: 0; transition: width 0.7s ease; }
+  .bar-previous { height: 3px; bottom: 0; background: rgba(255, 255, 255, 0.28); }
+  .bar-current { height: 12px; top: 0; }
+  .threshold { position: absolute; top: -3px; bottom: -3px; border-left: 1px dashed rgba(255, 255, 255, 0.3); }
   .numeric { text-align: right; padding: 4px 6px; font-variant-numeric: tabular-nums; }
-  .share { font-size: 15px; font-weight: 650; }
-  .change { display: inline-block; padding: 4px 7px; border-radius: 4px; font-size: 10px; white-space: nowrap; }
-  .positive { color: #507563; background: #edf4ed; }
-  .negative { color: #b9665b; background: #fcf0ec; }
-  .neutral { color: #777; background: #f0f0ec; }
-  .vote-column { font-size: 11px; color: #444; }
-  .exact-share { display: block; color: #9aa094; font-size: 9px; }
-  .extra-column { color: #8b9085; font-size: 11px; }
+  .share { font-family: var(--font-display); font-size: 20px; font-weight: 700; }
+  .change { display: inline-block; font-family: var(--font-display); font-weight: 600; font-size: 13px; white-space: nowrap; }
+  .positive { color: var(--green-up); }
+  .negative { color: var(--red-bright); }
+  .neutral { color: var(--muted); }
+  .vote-column { font-size: 12px; color: var(--muted); }
+  .exact-share { display: block; color: var(--muted); font-size: 10px; opacity: 0.7; }
+  .extra-column { color: var(--muted); font-size: 12px; }
 </style>
