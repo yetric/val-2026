@@ -13,7 +13,8 @@
 
   function go(destination: Destination) {
     active = destination.id;
-    document.querySelector(destination.selector)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const reduceMotion = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelector(destination.selector)?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   }
 
   onMount(() => {

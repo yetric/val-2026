@@ -13,8 +13,9 @@ function load(): Counts {
 }
 
 function createAnalytics() {
-  let enabled = $state(typeof localStorage !== 'undefined' && localStorage.getItem(`${STORAGE_KEY}-enabled`) === 'true');
+  let enabled = $state(false);
   let counts = $state<Counts>(load());
+  try { enabled = localStorage.getItem(`${STORAGE_KEY}-enabled`) === 'true'; } catch { /* Storage may be unavailable. */ }
 
   function persist() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(counts)); } catch { /* Storage may be unavailable. */ }

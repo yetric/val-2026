@@ -2,7 +2,6 @@
   import { comparison } from './comparison.svelte.ts';
   import { filters } from './filters.svelte.ts';
   import { currentView } from './currentView.svelte.ts';
-  import { regions } from './regions.svelte.ts';
   import { allocateSeats, areaMetrics, colors, partiesFor, partyKey } from './model.ts';
   import type { ElectionData, Party } from './types.ts';
 
@@ -27,10 +26,6 @@
     for (const item of currentView.data?.valkretsar || []) {
       if (item.namn) names.add(item.namn);
       for (const nested of item.valkretsar || []) if (nested.namn) names.add(nested.namn);
-    }
-    for (const entry of regions.entries) {
-      if (entry.name) names.add(entry.name);
-      for (const nested of entry.data?.valkretsar || []) if (nested.namn) names.add(nested.namn);
     }
     return [...names].sort((a, b) => a.localeCompare(b, 'sv'));
   });

@@ -57,7 +57,8 @@
     for (const card of cards) {
       const id = `valkrets-${slug(card.name)}`;
       const color = card.party ? colors[partyKey(card.party)] || '#92958c' : '#2a2a2e';
-      const attributes = ` data-map-code="${card.code}" data-map-name="${card.name.replaceAll('"', '&quot;')}" data-complete="${card.complete}" tabindex="0" role="button" style="fill:${color}"`;
+      const accessibleName = card.name.replaceAll('"', '&quot;');
+      const attributes = ` data-map-code="${card.code}" data-map-name="${accessibleName}" aria-label="${accessibleName}" data-complete="${card.complete}" tabindex="0" role="button" style="fill:${color}"`;
       markup = markup.replace(`id="${id}"`, `id="${id}"${attributes}`);
     }
     return markup;

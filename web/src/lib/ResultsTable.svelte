@@ -35,7 +35,7 @@
   }
 
   function ariaSort(mode: 'name' | 'votes' | 'change') {
-    return filters.sort === mode ? 'descending' : 'none';
+    return filters.sort === mode ? mode === 'name' ? 'ascending' : 'descending' : 'none';
   }
 </script>
 

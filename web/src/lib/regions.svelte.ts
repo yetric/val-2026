@@ -30,12 +30,14 @@ function createRegions() {
         }
       }
       for (const entry of next) {
-        if (isComplete(entry.data) && !isComplete(previousByName.get(entry.name))) {
+        const previousRegion = previousByName.get(entry.name);
+        if (isComplete(entry.data) && previousRegion && !isComplete(previousRegion)) {
           notifications.add(`${entry.name} är färdigräknad.`, 'completion');
         }
         for (const municipality of entry.data?.valkretsar || []) {
           const name = municipality.namn || '';
-          if (/kommun/i.test(name) && isComplete(municipality) && !isComplete(previousByName.get(name))) {
+          const previousMunicipality = previousByName.get(name);
+          if (/kommun/i.test(name) && isComplete(municipality) && previousMunicipality && !isComplete(previousMunicipality)) {
             notifications.add(`${name} är färdigräknad.`, 'completion');
           }
         }

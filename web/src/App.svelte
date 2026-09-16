@@ -64,11 +64,11 @@
     <ProvenancePanel />
     <CompletionSection />
     <DistrictFinder />
+    <MobileElectionMode />
   {/if}
 </main>
 
 <div class="ticker-bar"><LiveTicker /></div>
-<MobileElectionMode />
 
 <style>
   main { max-width: 1320px; margin: auto; padding: 32px 40px 60px; }

@@ -19,7 +19,7 @@
   const watchedParties = $derived(watchlist.items.filter(item => item.kind === 'party'));
   const unresolved = $derived(watchedAreas.filter(item => {
     const area = selectedArea(currentView.data, item.key);
-    return !area || area.antalValdistriktRaknade < area.antalValdistriktSomSkaRaknas;
+    return !area || area.antalValdistriktSomSkaRaknas <= 0 || area.antalValdistriktRaknade < area.antalValdistriktSomSkaRaknas;
   }));
   const partyChanges = $derived.by(() => {
     const parties = partiesFor(currentView.area);
@@ -44,7 +44,8 @@
 
   function openArea(name: string) {
     filters.area = name;
-    document.querySelector('#results-table')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const reduceMotion = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelector('#results-table')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   }
   async function copy() {
     try {

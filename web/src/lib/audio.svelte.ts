@@ -41,7 +41,7 @@ function createAudio() {
     return hour >= 22 || hour < 8;
   }
   function play(cue: AudioCue) {
-    if (!preferences.enabled || preferences.reduced || (preferences.quietHours && quietNow()) || typeof AudioContext === 'undefined') return;
+    if (!preferences.enabled || (preferences.quietHours && quietNow()) || typeof AudioContext === 'undefined') return;
     context ||= new AudioContext();
     if (context.state === 'suspended') void context.resume();
     const now = context.currentTime;

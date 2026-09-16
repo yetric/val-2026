@@ -1,6 +1,7 @@
 <script lang="ts">
   import { liveResults } from './liveResults.svelte.ts';
   import { historyStore } from './historyStore.svelte.ts';
+  import { filters } from './filters.svelte.ts';
   import { colors } from './model.ts';
 
   const transition = $derived(liveResults.mandateTransition);
@@ -15,15 +16,15 @@
   });
   const maxSeats = $derived(Math.max(1, ...rows.flatMap(row => [row.before, row.after])));
   const gains = $derived(rows.filter(row => row.after > row.before).reduce((sum, row) => sum + row.after - row.before, 0));
-  const losses = $derived(rows.filter(row => row.before < row.after).reduce((sum, row) => sum + row.before - row.after, 0));
+  const losses = $derived(rows.filter(row => row.after < row.before).reduce((sum, row) => sum + row.before - row.after, 0));
 </script>
 
-{#if !historyStore.replayMode && rows.length}
+{#if !historyStore.replayMode && !filters.area && rows.length}
   <section class="mandate-flow" aria-live="polite">
     <div class="flow-heading">
       <div>
         <h3>Senaste mandatflödet</h3>
-        <p>Förändringen sedan föregående livehämtning · {gains} in · {losses} ut</p>
+        <p>Nationellt · förändringen sedan föregående livehämtning · {gains} in · {losses} ut</p>
       </div>
       <span class="flow-key"><i></i> före → efter</span>
     </div>

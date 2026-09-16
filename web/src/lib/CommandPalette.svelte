@@ -9,12 +9,16 @@
   let open = $state(false);
   let query = $state('');
   let input = $state<HTMLInputElement>();
+  let palette = $state<HTMLDivElement>();
+  let opener = $state<HTMLElement | null>(null);
 
   function close() {
     open = false;
     query = '';
+    requestAnimationFrame(() => opener?.focus());
   }
-  function show() {
+  function show(source?: HTMLElement | null) {
+    opener = source || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     open = true;
     query = '';
     requestAnimationFrame(() => input?.focus());
@@ -25,7 +29,10 @@
     close();
   }
   function scrollTo(selector: string) {
-    document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelector(selector)?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+  }
+  function reducedMotion() {
+    return typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
   function click(id: string) {
     (document.getElementById(id) as HTMLButtonElement | null)?.click();
@@ -47,7 +54,7 @@
       { id: 'compare-previous', label: 'Jämför med valet 2022', hint: 'Jämförelse', run: () => { filters.comparisonMode = 'previous'; scrollTo('#results-table'); } },
       { id: 'compare-national', label: 'Jämför med hela riket', hint: 'Jämförelse', run: () => { filters.comparisonMode = 'national'; scrollTo('#results-table'); } },
       { id: 'compare-none', label: 'Stäng av jämförelse', hint: 'Jämförelse', run: () => { filters.comparisonMode = 'none'; scrollTo('#results-table'); } },
-      { id: 'watchlist', label: 'Öppna bevakning', hint: 'Navigering', run: () => { const element = document.getElementById('watchlist') as HTMLDetailsElement | null; if (element) { element.open = true; element.scrollIntoView({ behavior: 'smooth', block: 'start' }); } } },
+      { id: 'watchlist', label: 'Öppna bevakning', hint: 'Navigering', run: () => { const element = document.getElementById('watchlist') as HTMLDetailsElement | null; if (element) { element.open = true; element.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' }); } } },
       { id: 'share', label: 'Kopiera delningslänk', hint: 'Dela', run: () => click('share-view') },
       { id: 'csv', label: 'Exportera filtrerade resultat som CSV', hint: 'Export', run: () => click('export-csv') },
       { id: 'json', label: 'Exportera ögonblicksbild som JSON', hint: 'Export', run: () => click('export-json') },
@@ -58,22 +65,29 @@
     const handleKey = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
-        open ? close() : show();
+        open ? close() : show(document.activeElement as HTMLElement);
       } else if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes((event.target as HTMLElement)?.tagName)) {
         event.preventDefault();
         show();
       } else if (event.key === 'Escape' && open) close();
+      else if (event.key === 'Tab' && open && palette) {
+        const focusable = [...palette.querySelectorAll<HTMLElement>('button, input')].filter(element => !element.hasAttribute('disabled'));
+        if (!focusable.length) return;
+        const first = focusable[0], last = focusable.at(-1);
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
     };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   });
 </script>
 
-<button type="button" class="palette-trigger" aria-label="Öppna kommandopalett" onclick={show}>⌘ K <span>Kommandon</span></button>
+<button type="button" class="palette-trigger" aria-label="Öppna kommandopalett" onclick={(event) => show(event.currentTarget)}>⌘ K <span>Kommandon</span></button>
 
 {#if open}
   <div class="backdrop" role="presentation" onclick={(event) => { if (event.target === event.currentTarget) close(); }}>
-    <div class="palette" role="dialog" aria-modal="true" aria-labelledby="palette-title">
+    <div bind:this={palette} class="palette" role="dialog" aria-modal="true" aria-labelledby="palette-title">
       <div class="palette-head">
         <h2 id="palette-title">Kommandon</h2>
         <kbd>ESC</kbd>
